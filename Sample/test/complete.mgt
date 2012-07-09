@@ -1,0 +1,107 @@
+TESTSUITE {
+	suiteName: CompleteTests ,
+	systemUnderTest: PlanetenQuiz,
+	adapter: androidAdapter
+	SEQUENCE startScreen {
+		enterText : id nameField : "Stefan";
+		clickOnButton : id start;
+	}
+	TESTCASE {
+		caseName:allCorrect
+		seq: startScreen;
+		clickOnRadioButton : id radio0;
+		clickOnButton : "0";
+		clickOnButton : id radio1;
+		clickOnRadioButton : id  radio0;
+		clickOnButton : id  radio0;
+		clickOnRadioButton : id  radio0; 
+		clickOnButton : id radio1;
+		clickOnRadioButton : id radio1;
+		clickOnButton : id radio1;
+		
+		clickOnButton : id button1;
+		ASSERT assertTrue(searchText : "9 von 9 Fragen richtig");		
+	}
+	TESTCASE {
+		caseName: allFalse
+		seq: startScreen;
+		clickOnRadioButton : id radio0;
+		clickOnButton : id radio1;
+		clickOnButton : id radio0;
+		clickOnRadioButton : id  radio1;
+		clickOnButton : id  radio1;
+		clickOnRadioButton : id  radio1; 
+		clickOnButton : id radio0;
+		clickOnRadioButton : id radio0;
+		clickOnButton : id radio0;
+		
+		clickOnButton : id button1;
+		ASSERT assertTrue(searchText : "0 von 9 Fragen richtig");
+	}
+	TESTCASE {
+		caseName: incomplete
+		seq: startScreen;
+		clickOnRadioButton : id radio1;
+		clickOnButton : id radio1;
+		clickOnButton : id radio1;
+		clickOnRadioButton : id  radio1;
+		
+		clickOnButton : id button1;
+		ASSERT assertTrue(searchText : "5 Fragen wurden noch nicht beantwortet");
+	}
+	TESTCASE {
+		caseName:jumpBack
+  		seq: startScreen;
+  		clickOnButton : id radio1;
+		clickOnButton : id radio0;
+		clickOnButton : id radio1;
+		pressSpinnerItem : id spinner01 : -3;
+		ASSERT assertTrue( isSpinnerTextSelected : id spinner01 : "Merkur" ):FAIL;
+  		ASSERT assertTrue(searchText : "Schade, deine Anwort war falsch."):FAIL;
+	}
+	TESTCASE {
+		caseName:jumpFoward
+  		seq: startScreen;
+  		clickOnButton : id radio0;
+		clickOnButton : id radio0;
+		clickOnButton : id radio1;
+		pressSpinnerItem : id spinner01 : 3;
+		ASSERT assertTrue( isSpinnerTextSelected : id spinner01 : "Uranus" ):FAIL;
+		clickOnButton : id radio1;
+		clickOnButton : id button1;
+		ASSERT assertTrue(searchText : "5 Fragen wurden noch nicht beantwortet");
+	}
+	TESTCASE {
+		caseName:missingName
+		clickOnButton : id button1;
+		ASSERT assertEquals(getTextColorOfView : id enterName, "ffff0000");
+		ASSERT assertTrue(searchText : "Gib deinen Namen ein:"):FAIL;  
+	}
+	TESTCASE {
+		caseName:nameOnResult
+		seq: startScreen;
+  		clickOnButton : id radio1;
+  		clickOnButton : id button1;
+		ASSERT assertTrue(searchText : "Stefan");
+	}
+	TESTCASE {
+		caseName:restart
+		seq: startScreen;
+  		clickOnButton : id radio1;
+  		clickOnButton : id button1;
+  		clickOnButton : id restart;
+		ASSERT assertTrue(searchText : "Gib deinen Namen ein:");
+		seq: startScreen;
+		ASSERT assertFalse(searchText : "Schade, deine Anwort war falsch."):FAIL;
+	}
+	TESTCASE {
+		caseName:viewResult
+		seq: startScreen;
+  		clickOnButton : id radio0;
+  		clickOnButton : id button1;
+  		clickOnButton : id viewResult;
+  		ASSERT assertTrue( isSpinnerTextSelected : id spinner01 : "Venus" );
+  		pressSpinnerItem : id spinner01 : -1;
+		ASSERT assertTrue(searchText : "Schade, deine Anwort war falsch."):FAIL;
+	}
+}

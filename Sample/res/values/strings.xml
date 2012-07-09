@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2010 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<!--
+    The string named "app_name" defines the application's visible name.
+    The string array "Planets" defines an array of 9 strings. The application loads
+    this array into the spinner's array adapter.
+    The string "planet_prompt" defines the prompt for the result text box.
+ -->
+<resources>
+    <string name="app_name">Planetenquiz</string>
+    <string-array name="Planets">
+        <item>Merkur</item>
+        <item>Venus</item>
+        <item>Erde</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptun</item>
+        <item>Pluto</item>
+    </string-array>
+    <string name="planet_prompt">Select a planet</string>
+    <string name="frage">Wie viel Monde hat der Planet</string>
+    <integer-array name="Moons">
+        <item >0</item>
+        <item >0</item>
+        <item >1</item>
+        <item >2</item>
+        <item >64</item>
+        <item >62</item>
+        <item >27</item>
+        <item >13</item>
+        <item >3</item>
+    </integer-array>
+    <string name="correctAnswer">Super, deine Anwort war richtig.</string>
+    <string name="wrongAnswer">Schade, deine Anwort war falsch.</string>
+    <string name="enterName">Gib deinen Namen ein:</string>
+    <string name="start">Los geht\'s</string>
+    <string name="summary">du hast folgende Punktzahl erreicht:</string>
+    <string name="restart">Nochmal</string>
+    <string name="ergebnis">Zum Ergebnis</string>
+    <string name="viewAnswers">Antworten ansehen</string>
+</resources>
