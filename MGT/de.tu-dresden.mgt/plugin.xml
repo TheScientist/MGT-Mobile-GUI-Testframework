@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://mgt/1.0"
+            class="de.tu_dresden.mgt.MgtPackage"
+            genModel="metamodel/mgt.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <parser
+            type="mgt"
+            class="de.tu_dresden.mgt.util.MgtResourceFactoryImpl"/>
+   </extension>
+   <extension
+         id="mgtProduct"
+         name="mgtProduct"
+         point="org.eclipse.core.runtime.products">
+   </extension>
+
+</plugin>

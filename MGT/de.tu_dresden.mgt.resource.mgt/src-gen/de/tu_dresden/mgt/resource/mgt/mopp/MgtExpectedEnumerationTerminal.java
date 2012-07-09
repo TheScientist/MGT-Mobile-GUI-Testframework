@@ -1,0 +1,39 @@
+/**
+ * <copyright>
+ * </copyright>
+ *
+ * 
+ */
+package de.tu_dresden.mgt.resource.mgt.mopp;
+
+/**
+ * A representation for a range in a document where an enumeration literal (i.e.,
+ * a set of static strings) is expected.
+ */
+public class MgtExpectedEnumerationTerminal extends de.tu_dresden.mgt.resource.mgt.mopp.MgtAbstractExpectedElement {
+	
+	private de.tu_dresden.mgt.resource.mgt.grammar.MgtEnumerationTerminal enumerationTerminal;
+	
+	public MgtExpectedEnumerationTerminal(de.tu_dresden.mgt.resource.mgt.grammar.MgtEnumerationTerminal enumerationTerminal) {
+		super(enumerationTerminal.getMetaclass());
+		this.enumerationTerminal = enumerationTerminal;
+	}
+	
+	public java.util.Set<String> getTokenNames() {
+		// EnumerationTerminals are associated with multiple tokens, one for each literal
+		// that was mapped to a string
+		java.util.Set<String> tokenNames = new java.util.LinkedHashSet<String>();
+		java.util.Map<String, String> mapping = enumerationTerminal.getLiteralMapping();
+		for (String literalName : mapping.keySet()) {
+			String text = mapping.get(literalName);
+			if (text != null && !"".equals(text)) {
+				tokenNames.add("'" + text + "'");
+			}
+		}
+		return tokenNames;
+	}
+	
+	public de.tu_dresden.mgt.resource.mgt.grammar.MgtEnumerationTerminal getEnumerationTerminal() {
+		return this.enumerationTerminal;
+	}
+}

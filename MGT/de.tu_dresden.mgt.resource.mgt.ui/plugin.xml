@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="de.tu_dresden.mgt.adapter" name="TestAdapter" schema="schema/de.tu_dresden.mgt.adapter.exsd"/>
+	<extension point="org.emftext.access.syntax.ui">
+		<metaInformationProvider class="de.tu_dresden.mgt.resource.mgt.ui.MgtUIMetaInformation" id="de.tu_dresden.mgt.resource.mgt.ui.MgtUIMetaInformation">
+		</metaInformationProvider>
+	</extension>
+	
+	<extension point="org.eclipse.ui.editors">
+		<editor class="de.tu_dresden.mgt.resource.mgt.ui.MgtEditor" contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor" extensions="mgt" icon="icons/editor_icon.gif" id="de.tu_dresden.mgt.resource.mgt.ui.MgtEditor" name="EMFText mgt Editor">
+			<contentTypeBinding contentTypeId="de.tu_dresden.mgt.resource.mgt">
+			</contentTypeBinding>
+		</editor>
+	</extension>
+	
+	<extension point="org.eclipse.core.runtime.preferences">
+		<initializer class="de.tu_dresden.mgt.resource.mgt.ui.MgtPreferenceInitializer">
+		</initializer>
+	</extension>
+	
+	<extension point="org.eclipse.ui.preferencePages">
+		<page name="Mgt Text Editor" id="de.tu_dresden.mgt.resource.mgt.ui.MgtPreferencePage" class="de.tu_dresden.mgt.resource.mgt.ui.MgtPreferencePage" category="org.eclipse.ui.preferencePages.GeneralTextEditor">
+		</page>
+		<page name="Syntax Coloring" id="de.tu_dresden.mgt.resource.mgt.ui.MgtSyntaxColoringPreferencePage" class="de.tu_dresden.mgt.resource.mgt.ui.MgtSyntaxColoringPreferencePage" category="de.tu_dresden.mgt.resource.mgt.ui.MgtPreferencePage">
+		</page>
+		<page name="Brackets" id="de.tu_dresden.mgt.resource.mgt.ui.MgtBracketPreferencePage" class="de.tu_dresden.mgt.resource.mgt.ui.MgtBracketPreferencePage" category="de.tu_dresden.mgt.resource.mgt.ui.MgtPreferencePage">
+		</page>
+	</extension>
+	
+	<extension point="org.eclipse.ui.newWizards">
+		<category id="org.emftext.runtime.ui.EMFTextFileCategory" name="EMFText File">
+		</category>
+		<wizard category="org.emftext.runtime.ui.EMFTextFileCategory" icon="/icons/default_new_icon.gif" class="de.tu_dresden.mgt.resource.mgt.ui.MgtNewFileWizard" id="de.tu_dresden.mgt.resource.mgt.ui.MgtNewFileWizard" name="EMFText .mgt file">
+		</wizard>
+		<category id="org.emftext.runtime.ui.EMFTextProjectCategory" name="EMFText Project">
+		</category>
+		<wizard category="org.emftext.runtime.ui.EMFTextProjectCategory" icon="/icons/default_new_icon.gif" class="de.tu_dresden.mgt.resource.mgt.ui.MgtNewProjectWizard" id="de.tu_dresden.mgt.resource.mgt.ui.MgtNewProjectWizard" name="EMFText mgt project" project="true">
+		</wizard>
+	</extension>
+	
+	<extension point="org.eclipse.ui.ide.markerResolution">
+		<markerResolutionGenerator class="de.tu_dresden.mgt.resource.mgt.ui.MgtMarkerResolutionGenerator" markerType="de.tu_dresden.mgt.resource.mgt.problem">
+		</markerResolutionGenerator>
+	</extension>
+	
+	<extension point="org.eclipse.core.filebuffers.annotationModelCreation">
+		<factory class="de.tu_dresden.mgt.resource.mgt.ui.MgtAnnotationModelFactory" extensions="mgt">
+		</factory>
+	</extension>
+	
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+		<content-type id="de.tu_dresden.mgt.resource.mgt" name=".mgt File" base-type="org.eclipse.core.runtime.text" file-extensions="mgt">
+		</content-type>
+	</extension>
+	
+	<extension point="org.eclipse.ui.editors.documentProviders">
+		<provider class="org.eclipse.ui.editors.text.TextFileDocumentProvider" extensions="mgt" id="de.tu_dresden.mgt.resource.mgt.ui.provider">
+		</provider>
+	</extension>
+	
+	<extension point="org.eclipse.ui.editors.annotationTypes">
+		<type name="de.tu_dresden.mgt.resource.mgt.ui.occurences">
+		</type>
+		<type name="de.tu_dresden.mgt.resource.mgt.ui.occurences.declaration" super="de.tu_dresden.mgt.resource.mgt.ui.occurences">
+		</type>
+	</extension>
+	
+	<extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
+		<specification annotationType="de.tu_dresden.mgt.resource.mgt.ui.occurences" label="Occurrences (in .mgt files)" icon="/icons/occurrence_icon.gif" textPreferenceKey="mgt.occurrenceIndication" textPreferenceValue="false" highlightPreferenceKey="mgt.occurrenceHighlighting" highlightPreferenceValue="true" contributesToHeader="false" overviewRulerPreferenceKey="mgt.occurrenceIndicationInOverviewRuler" overviewRulerPreferenceValue="true" verticalRulerPreferenceKey="mgt.occurrenceIndicationInVerticalRuler" verticalRulerPreferenceValue="false" colorPreferenceKey="mgt.occurrenceIndicationColor" colorPreferenceValue="212,212,212" presentationLayer="4" showInNextPrevDropdownToolbarActionKey="mgt.showOccurrenceInNextPrevDropdownToolbarAction" showInNextPrevDropdownToolbarAction="true" isGoToNextNavigationTargetKey="mgt.isOccurrenceGoToNextNavigationTarget" isGoToNextNavigationTarget="false" isGoToPreviousNavigationTargetKey="mgt.isOccurrenceGoToPreviousNavigationTarget" isGoToPreviousNavigationTarget="false" textStylePreferenceKey="mgt.occurrenceTextStyle" textStylePreferenceValue="NONE">
+		</specification>
+		<specification annotationType="de.tu_dresden.mgt.resource.mgt.ui.occurences.declaration" label="Declarations (in .mgt files)" textPreferenceKey="mgt.declarationIndication" textPreferenceValue="false" highlightPreferenceKey="mgt.declarationHighlighting" highlightPreferenceValue="true" overviewRulerPreferenceKey="mgt.declarationIndicationInOverviewRuler" overviewRulerPreferenceValue="true" verticalRulerPreferenceKey="mgt.declarationIndicationInVerticalRuler" verticalRulerPreferenceValue="false" colorPreferenceKey="mgt.declarationIndicationColor" colorPreferenceValue="240,216,168" presentationLayer="4" textStylePreferenceKey="mgt.declarationTextStyle" textStylePreferenceValue="NONE">
+		</specification>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+		<launchConfigurationTypeImage icon="/icons/launch_type_icon.gif" configTypeID="de.tu_dresden.mgt.resource.mgt.ui.launchConfigurationType" id="de.tu_dresden.mgt.launchImage">
+		</launchConfigurationTypeImage>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+		<launchConfigurationTabGroup type="de.tu_dresden.mgt.resource.mgt.ui.launchConfigurationType" class="de.tu_dresden.mgt.resource.mgt.ui.launch.MgtLaunchConfigurationTabGroup" id="de.tu_dresden.mgt.launchConfigurationTabGroup" helpContextId="de.tu_dresden.mgt.launchConfigHelpContext">
+			<launchMode mode="debug" perspective="org.eclipse.debug.ui.DebugPerspective" description="Debug mgt model.">
+			</launchMode>
+			<launchMode mode="run" description="Run mgt model.">
+			</launchMode>
+		</launchConfigurationTabGroup>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchShortcuts">
+		<shortcut label="mgt Application" icon="/icons/launch_shortcut_icon.gif" helpContextId="de.tu_dresden.mgt.launch" modes="run,debug" class="de.tu_dresden.mgt.resource.mgt.ui.launch.MgtLaunchShortcut" description="Launch a mgt model" id="de.tu_dresden.mgt.launchShortcut">
+			<description description="Run mgt model" mode="run">
+			</description>
+			<description description="Debug mgt model" mode="debug">
+			</description>
+			<contextualLaunch>
+				<enablement>
+					<with variable="selection">
+						<count value="1">
+						</count>
+						<iterate>
+							<test property="de.tu_dresden.mgt.isLaunchable">
+							</test>
+						</iterate>
+					</with>
+				</enablement>
+			</contextualLaunch>
+			<configurationType id="de.tu_dresden.mgt.resource.mgt.ui.launchConfigurationType">
+			</configurationType>
+		</shortcut>
+	</extension>
+	
+	<extension point="org.eclipse.core.expressions.propertyTesters">
+		<propertyTester id="de.tu_dresden.mgt.PropertyTester" type="java.lang.Object" namespace="de.tu_dresden.mgt" properties="isLaunchable" class="de.tu_dresden.mgt.resource.mgt.ui.MgtPropertyTester">
+		</propertyTester>
+	</extension>
+	
+	<extension point="org.eclipse.ui.editors.annotationTypes">
+		<type name="de.tu_dresden.mgt.resource.mgt.ui.debug.lineBreakpoint" markerType="de.tu_dresden.mgt.resource.mgt.debug.lineBreakpoint.marker" super="org.eclipse.debug.core.breakpoint">
+		</type>
+	</extension>
+	
+	<extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
+		<specification annotationType="de.tu_dresden.mgt.resource.mgt.ui.debug.lineBreakpoint" label="Breakpoints (in .mgt files)" icon="/icons/breakpoint_icon.gif" textPreferenceKey="de.tu_dresden.mgt.resource.mgt.ui.lineBreakpoint" textPreferenceValue="false" highlightPreferenceKey="de.tu_dresden.mgt.resource.mgt.ui.lineBreakpointHighlighting" highlightPreferenceValue="true" contributesToHeader="false" overviewRulerPreferenceKey="de.tu_dresden.mgt.resource.mgt.ui.lineBreakpointIndicationInOverviewRuler" overviewRulerPreferenceValue="true" verticalRulerPreferenceKey="de.tu_dresden.mgt.resource.mgt.ui.lineBreakpointIndicationInVerticalRuler" verticalRulerPreferenceValue="false" colorPreferenceKey="de.tu_dresden.mgt.resource.mgt.ui.lineBreakpointColor" colorPreferenceValue="212,212,212" presentationLayer="4" showInNextPrevDropdownToolbarActionKey="de.tu_dresden.mgt.resource.mgt.ui.showLineBreakpointInNextPrevDropdownToolbarAction" showInNextPrevDropdownToolbarAction="true" isGoToNextNavigationTargetKey="de.tu_dresden.mgt.resource.mgt.ui.isLineBreakpointGoToNextNavigationTarget" isGoToNextNavigationTarget="false" isGoToPreviousNavigationTargetKey="de.tu_dresden.mgt.resource.mgt.ui.isLineBreakpointGoToPreviousNavigationTarget" isGoToPreviousNavigationTarget="false" textStylePreferenceKey="de.tu_dresden.mgt.resource.mgt.ui.lineBreakpointTextStyle" textStylePreferenceValue="NONE">
+		</specification>
+	</extension>
+	
+	<extension point="org.eclipse.core.runtime.adapters">
+		<factory adaptableType="de.tu_dresden.mgt.resource.mgt.ui.MgtEditor" class="de.tu_dresden.mgt.resource.mgt.ui.debug.MgtAdapterFactory">
+			<adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">
+			</adapter>
+		</factory>
+		<factory adaptableType="de.tu_dresden.mgt.resource.mgt.debug.MgtDebugVariable" class="de.tu_dresden.mgt.resource.mgt.ui.debug.MgtAdapterFactory">
+			<adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementLabelProvider">
+			</adapter>
+		</factory>
+		<factory adaptableType="de.tu_dresden.mgt.resource.mgt.debug.MgtDebugVariable" class="de.tu_dresden.mgt.resource.mgt.ui.debug.MgtAdapterFactory">
+			<adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider">
+			</adapter>
+		</factory>
+	</extension>
+	
+	<extension point="org.eclipse.ui.popupMenus">
+		<viewerContribution id="de.tu_dresden.mgt.resource.mgt.ui.RulerPopupActions" targetID="de.tu_dresden.mgt.resource.mgt.EditorRuler">
+			<action id="de.tu_dresden.mgt.resource.mgt.ui.toggleBreakpointAction" icon="icons/breakpoint_icon.gif" label="Toggle Breakpoint" class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate" menubarPath="debug">
+			</action>
+		</viewerContribution>
+	</extension>
+	
+	<extension point="org.eclipse.ui.editorActions">
+		<editorContribution targetID="de.tu_dresden.mgt.resource.mgt.ui.MgtEditor" id="de.tu_dresden.mgt.resource.mgt.ui.BreakpointRulerActions">
+			<action id="de.tu_dresden.mgt.resource.mgt.ui.debug.RulerToggleBreakpointAction" label="Add breakpoint" class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate" actionID="RulerDoubleClick">
+			</action>
+		</editorContribution>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.debugModelPresentations">
+		<debugModelPresentation id="de.tu_dresden.mgt.resource.mgt.debugModel" class="de.tu_dresden.mgt.resource.mgt.ui.debug.MgtDebugModelPresentation">
+		</debugModelPresentation>
+	</extension>
+	
+</plugin>

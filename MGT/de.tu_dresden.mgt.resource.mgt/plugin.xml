@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+	<extension point="org.emftext.access.syntax">
+		<metaInformationProvider class="de.tu_dresden.mgt.resource.mgt.mopp.MgtMetaInformation" id="de.tu_dresden.mgt.resource.mgt.mopp.MgtMetaInformation">
+		</metaInformationProvider>
+	</extension>
+	
+	<extension id="de.tu_dresden.mgt.resource.mgt.problem" name="EMFText Problem" point="org.eclipse.core.resources.markers">
+		<persistent value="true">
+		</persistent>
+		<super type="org.eclipse.core.resources.problemmarker">
+		</super>
+		<super type="org.eclipse.core.resources.textmarker">
+		</super>
+		<super type="org.eclipse.emf.ecore.diagnostic">
+		</super>
+	</extension>
+	
+	<extension id="de.tu_dresden.mgt.resource.mgt.problem.syntax_error" name="EMFText Problem" point="org.eclipse.core.resources.markers">
+		<persistent value="true">
+		</persistent>
+		<super type="de.tu_dresden.mgt.resource.mgt.problem">
+		</super>
+	</extension>
+	
+	<extension id="de.tu_dresden.mgt.resource.mgt.problem.print_problem" name="EMFText Problem" point="org.eclipse.core.resources.markers">
+		<persistent value="true">
+		</persistent>
+		<super type="de.tu_dresden.mgt.resource.mgt.problem">
+		</super>
+	</extension>
+	
+	<extension id="de.tu_dresden.mgt.resource.mgt.problem.unresolved_reference" name="EMFText Problem" point="org.eclipse.core.resources.markers">
+		<persistent value="true">
+		</persistent>
+		<super type="de.tu_dresden.mgt.resource.mgt.problem">
+		</super>
+	</extension>
+	
+	<extension id="de.tu_dresden.mgt.resource.mgt.problem.analysis_problem" name="EMFText Problem" point="org.eclipse.core.resources.markers">
+		<persistent value="true">
+		</persistent>
+		<super type="de.tu_dresden.mgt.resource.mgt.problem">
+		</super>
+	</extension>
+	
+	<extension id="de.tu_dresden.mgt.resource.mgt.problem.builder_error" name="EMFText Problem" point="org.eclipse.core.resources.markers">
+		<persistent value="true">
+		</persistent>
+		<super type="de.tu_dresden.mgt.resource.mgt.problem">
+		</super>
+	</extension>
+	
+	<extension id="de.tu_dresden.mgt.resource.mgt.nature" name="mgt nature" point="org.eclipse.core.resources.natures">
+		<runtime>
+			<run class="de.tu_dresden.mgt.resource.mgt.mopp.MgtNature">
+			</run>
+		</runtime>
+		<builder id="de.tu_dresden.mgt.resource.mgt.builder">
+		</builder>
+	</extension>
+	
+	<extension point="org.eclipse.core.resources.builders" id="de.tu_dresden.mgt.resource.mgt.builder" name="mgt Builder">
+		<builder hasNature="true">
+			<run class="de.tu_dresden.mgt.resource.mgt.mopp.MgtBuilderAdapter">
+			</run>
+		</builder>
+	</extension>
+	
+	<extension-point id="de.tu_dresden.mgt.resource.mgt.default_load_options" name="Default Load Options" schema="schema/default_load_options.exsd">
+	</extension-point>
+	
+	<extension point="org.eclipse.emf.ecore.extension_parser">
+		<parser class="de.tu_dresden.mgt.resource.mgt.mopp.MgtResourceFactoryDelegator" type="mgt">
+		</parser>
+	</extension>
+	
+	<extension-point id="de.tu_dresden.mgt.resource.mgt.additional_extension_parser" name="Additional Extension Parser" schema="schema/additional_extension_parser.exsd">
+	</extension-point>
+	
+	<extension point="org.eclipse.debug.core.breakpoints">
+		<breakpoint class="de.tu_dresden.mgt.resource.mgt.debug.MgtLineBreakpoint" id="de.tu_dresden.mgt.resource.mgt.debug.breakpoint" markerType="de.tu_dresden.mgt.resource.mgt.debug.lineBreakpoint.marker" name="mgt Breakpoint">
+		</breakpoint>
+	</extension>
+	
+	<extension id="de.tu_dresden.mgt.resource.mgt.debug.lineBreakpoint.marker" point="org.eclipse.core.resources.markers">
+		<super type="org.eclipse.debug.core.lineBreakpointMarker">
+		</super>
+		<super type="org.eclipse.core.resources.textmarker">
+		</super>
+		<persistent value="true">
+		</persistent>
+	</extension>
+	
+	<extension point="org.eclipse.debug.core.launchConfigurationTypes">
+		<launchConfigurationType id="de.tu_dresden.mgt.resource.mgt.ui.launchConfigurationType" delegate="de.tu_dresden.mgt.resource.mgt.launch.MgtLaunchConfigurationDelegate" modes="run,debug" name="mgt Application" sourceLocatorId="de.tu_dresden.mgt.resource.mgt.ui.sourceLocator" sourcePathComputerId="de.tu_dresden.mgt.resource.mgt.ui.sourcePathComputer" delegateName="mgt Launch Tooling" delegateDescription="This will run or debug .mgt files.">
+		</launchConfigurationType>
+	</extension>
+	
+	<extension point="org.eclipse.debug.core.sourcePathComputers">
+		<sourcePathComputer class="de.tu_dresden.mgt.resource.mgt.debug.MgtSourcePathComputerDelegate" id="de.tu_dresden.mgt.resource.mgt.ui.sourcePathComputer">
+		</sourcePathComputer>
+	</extension>
+	
+	<extension point="org.eclipse.debug.core.sourceLocators">
+		<sourceLocator id="de.tu_dresden.mgt.resource.mgt.ui.sourceLocator" class="de.tu_dresden.mgt.resource.mgt.debug.MgtSourceLocator" name="mgt Source Locator">
+		</sourceLocator>
+	</extension>
+	
+	<extension point="de.tu_dresden.mgt.resource.mgt.default_load_options"> 
+	  <provider 
+	    class="de.tu_dresden.mgt.adapter.ValidateModel" 
+	    id="de.tu_dresden.mgt.resource.mgt.adapter.provider1"> 
+	  </provider> 
+	</extension>
+</plugin>

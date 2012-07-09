@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="de.tu_dresden.mgt.adapter">
+      <adapter
+            class="de.tu_dresden.mgt.androidadapter.AndroidAdapter">
+      </adapter>
+   </extension>
+</plugin>
