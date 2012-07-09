@@ -1,9 +1,7 @@
 *.class
 bin
-# Eclipse Stuff #
 .project
 .metadata
-.settings
 # Package Files #
 *.jar
 *.war
