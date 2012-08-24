@@ -50,6 +50,19 @@ public class MgtImageProvider {
 		}
 		
 		// try loading image from UI bundle
+		org.eclipse.jface.resource.ImageDescriptor descriptor = getImageDescriptor(key);
+		if (descriptor == null) {
+			return null;
+		}
+		image = descriptor.createImage();
+		if (image == null) {
+			return null;
+		}
+		imageCache.put(key, image);
+		return image;
+	}
+	
+	public org.eclipse.jface.resource.ImageDescriptor getImageDescriptor(String key) {
 		org.eclipse.core.runtime.IPath path = new org.eclipse.core.runtime.Path(key);
 		org.eclipse.jface.resource.ImageDescriptor descriptor = org.eclipse.jface.resource.ImageDescriptor.createFromURL(org.eclipse.core.runtime.FileLocator.find(de.tu_dresden.mgt.resource.mgt.ui.MgtUIPlugin.getDefault().getBundle(), path, null));
 		if (org.eclipse.jface.resource.ImageDescriptor.getMissingImageDescriptor().equals(descriptor) || descriptor == null) {
@@ -67,12 +80,7 @@ public class MgtImageProvider {
 				de.tu_dresden.mgt.resource.mgt.ui.MgtUIPlugin.logError("IconProvider can't load image (URL is malformed).", mue);
 			}
 		}
-		image = descriptor.createImage();
-		if (image == null) {
-			return null;
-		}
-		imageCache.put(key, image);
-		return image;
+		return descriptor;
 	}
 	
 }

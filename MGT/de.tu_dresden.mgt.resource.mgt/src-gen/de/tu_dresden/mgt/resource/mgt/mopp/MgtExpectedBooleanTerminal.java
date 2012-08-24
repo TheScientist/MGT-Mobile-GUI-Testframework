@@ -23,6 +23,13 @@ public class MgtExpectedBooleanTerminal extends de.tu_dresden.mgt.resource.mgt.m
 		return booleanTerminal;
 	}
 	
+	/**
+	 * Returns the expected boolean terminal.
+	 */
+	public de.tu_dresden.mgt.resource.mgt.grammar.MgtSyntaxElement getSymtaxElement() {
+		return booleanTerminal;
+	}
+	
 	private org.eclipse.emf.ecore.EStructuralFeature getFeature() {
 		return booleanTerminal.getFeature();
 	}
@@ -36,6 +43,11 @@ public class MgtExpectedBooleanTerminal extends de.tu_dresden.mgt.resource.mgt.m
 			return getFeature().equals(((MgtExpectedBooleanTerminal) o).getFeature());
 		}
 		return false;
+	}
+	
+	@Override	
+	public int hashCode() {
+		return getFeature().hashCode();
 	}
 	
 	public java.util.Set<String> getTokenNames() {

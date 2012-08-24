@@ -45,7 +45,7 @@ public abstract class MgtQuickFix implements de.tu_dresden.mgt.resource.mgt.IMgt
 			getResource().save(output, null);
 			return output.toString();
 		} catch (java.io.IOException e) {
-			de.tu_dresden.mgt.resource.mgt.mopp.MgtPlugin.logError("Exception while applying quick fix", e);
+			new de.tu_dresden.mgt.resource.mgt.util.MgtRuntimeUtil().logError("Exception while applying quick fix", e);
 		}
 		return null;
 	}

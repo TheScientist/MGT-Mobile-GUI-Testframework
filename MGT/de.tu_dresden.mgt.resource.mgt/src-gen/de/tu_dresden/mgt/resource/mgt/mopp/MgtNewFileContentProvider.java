@@ -43,7 +43,7 @@ public class MgtNewFileContentProvider {
 		try {
 			printer.print(root);
 		} catch (java.io.IOException e) {
-			de.tu_dresden.mgt.resource.mgt.mopp.MgtPlugin.logError("Exception while generating example content.", e);
+			new de.tu_dresden.mgt.resource.mgt.util.MgtRuntimeUtil().logError("Exception while generating example content.", e);
 		}
 		return buffer.toString();
 	}

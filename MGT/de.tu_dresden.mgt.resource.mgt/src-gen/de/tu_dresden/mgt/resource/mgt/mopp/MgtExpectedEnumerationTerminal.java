@@ -36,4 +36,16 @@ public class MgtExpectedEnumerationTerminal extends de.tu_dresden.mgt.resource.m
 	public de.tu_dresden.mgt.resource.mgt.grammar.MgtEnumerationTerminal getEnumerationTerminal() {
 		return this.enumerationTerminal;
 	}
+	
+	/**
+	 * Returns the expected enumeration terminal.
+	 */
+	public de.tu_dresden.mgt.resource.mgt.grammar.MgtSyntaxElement getSymtaxElement() {
+		return enumerationTerminal;
+	}
+	
+	public String toString() {
+		return "EnumTerminal \"" + getEnumerationTerminal() + "\"";
+	}
+	
 }

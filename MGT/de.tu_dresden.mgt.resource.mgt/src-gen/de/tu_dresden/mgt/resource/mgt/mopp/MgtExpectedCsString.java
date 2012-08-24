@@ -23,6 +23,13 @@ public class MgtExpectedCsString extends de.tu_dresden.mgt.resource.mgt.mopp.Mgt
 		return keyword.getValue();
 	}
 	
+	/**
+	 * Returns the expected keyword.
+	 */
+	public de.tu_dresden.mgt.resource.mgt.grammar.MgtSyntaxElement getSymtaxElement() {
+		return keyword;
+	}
+	
 	public java.util.Set<String> getTokenNames() {
 		return java.util.Collections.singleton("'" + getValue() + "'");
 	}
@@ -36,6 +43,11 @@ public class MgtExpectedCsString extends de.tu_dresden.mgt.resource.mgt.mopp.Mgt
 			return getValue().equals(((MgtExpectedCsString) o).getValue());
 		}
 		return false;
+	}
+	
+	@Override	
+	public int hashCode() {
+		return getValue().hashCode();
 	}
 	
 }

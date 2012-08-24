@@ -40,8 +40,12 @@ public class MgtHyperlinkDetector implements org.eclipse.jface.text.hyperlink.IH
 					text = textViewer.getDocument().get(offset, length);
 				} catch (org.eclipse.jface.text.BadLocationException e) {
 				}
-				org.eclipse.jface.text.hyperlink.IHyperlink hyperlink = new de.tu_dresden.mgt.resource.mgt.ui.MgtHyperlink(new org.eclipse.jface.text.Region(offset, length), resolvedEObject, text);
-				return new org.eclipse.jface.text.hyperlink.IHyperlink[] { hyperlink };
+				// we skipt elements that are not contained in a resource, because we cannot jump
+				// to them anyway
+				if (resolvedEObject.eResource() != null) {
+					org.eclipse.jface.text.hyperlink.IHyperlink hyperlink = new de.tu_dresden.mgt.resource.mgt.ui.MgtHyperlink(new org.eclipse.jface.text.Region(offset, length), resolvedEObject, text);
+					return new org.eclipse.jface.text.hyperlink.IHyperlink[] { hyperlink };
+				}
 			}
 		}
 		return null;

@@ -18,6 +18,9 @@ public class MgtCompletionProcessor implements org.eclipse.jface.text.contentass
 	
 	public org.eclipse.jface.text.contentassist.ICompletionProposal[] computeCompletionProposals(org.eclipse.jface.text.ITextViewer viewer, int offset) {
 		de.tu_dresden.mgt.resource.mgt.IMgtTextResource textResource = resourceProvider.getResource();
+		if (textResource == null) {
+			return new org.eclipse.jface.text.contentassist.ICompletionProposal[0];
+		}
 		String content = viewer.getDocument().get();
 		de.tu_dresden.mgt.resource.mgt.ui.MgtCodeCompletionHelper helper = new de.tu_dresden.mgt.resource.mgt.ui.MgtCodeCompletionHelper();
 		de.tu_dresden.mgt.resource.mgt.ui.MgtCompletionProposal[] computedProposals = helper.computeCompletionProposals(textResource, content, offset);

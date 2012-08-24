@@ -23,4 +23,9 @@ public interface IMgtTextPrinter extends de.tu_dresden.mgt.resource.mgt.IMgtConf
 	 */
 	public void print(org.eclipse.emf.ecore.EObject element) throws java.io.IOException;
 	
+	/**
+	 * Sets the encoding used for printing.
+	 */
+	public void setEncoding(String encoding);
+	
 }

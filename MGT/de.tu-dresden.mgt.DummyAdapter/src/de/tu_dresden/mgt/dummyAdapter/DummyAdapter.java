@@ -11,7 +11,6 @@ import de.tu_dresden.mgt.adapter.IAdapter;
 
 public class DummyAdapter implements IAdapter{
 
-	@Override
 	public String getAdapterName() {
 		return "dummyAdapter";
 	}
@@ -26,7 +25,6 @@ public class DummyAdapter implements IAdapter{
 		return new String[]{"Button(name: ok)", "TextField"};
 	}*/
 	
-	@Override
 	public Set<String> getAssertionProposals() {
 		HashSet<String> proposals = new HashSet<String>();
 		proposals.add("Assert.asserTrue(message condition)");
@@ -34,7 +32,6 @@ public class DummyAdapter implements IAdapter{
 		return proposals;
 	}
 
-	@Override
 	public Set<String> getElementIds(String sut) {
 		HashSet<String> proposals = new HashSet<String>();
 		proposals.add("id:button0");
@@ -42,12 +39,10 @@ public class DummyAdapter implements IAdapter{
 		return proposals;
 	}
 
-	@Override
 	public TestSuite runTest(TestSuite suite, Properties properties) {
 		return suite;
 	}
 
-	@Override
 	public Collection<String> getKeywords() {
 		Collection<String> keywords = new HashSet<String>();
 		keywords.add("keyword1");

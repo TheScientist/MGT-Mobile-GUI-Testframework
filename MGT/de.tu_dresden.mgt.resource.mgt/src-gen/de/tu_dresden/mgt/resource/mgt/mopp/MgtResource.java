@@ -129,6 +129,8 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 	private de.tu_dresden.mgt.resource.mgt.IMgtLocationMap locationMap;
 	private int proxyCounter = 0;
 	private de.tu_dresden.mgt.resource.mgt.IMgtTextParser parser;
+	private de.tu_dresden.mgt.resource.mgt.util.MgtLayoutUtil layoutUtil = new de.tu_dresden.mgt.resource.mgt.util.MgtLayoutUtil();
+	private de.tu_dresden.mgt.resource.mgt.mopp.MgtMarkerHelper markerHelper;
 	private java.util.Map<String, de.tu_dresden.mgt.resource.mgt.IMgtContextDependentURIFragment<? extends org.eclipse.emf.ecore.EObject>> internalURIFragmentMap = new java.util.LinkedHashMap<String, de.tu_dresden.mgt.resource.mgt.IMgtContextDependentURIFragment<? extends org.eclipse.emf.ecore.EObject>>();
 	private java.util.Map<String, de.tu_dresden.mgt.resource.mgt.IMgtQuickFix> quickFixMap = new java.util.LinkedHashMap<String, de.tu_dresden.mgt.resource.mgt.IMgtQuickFix>();
 	private java.util.Map<?, ?> loadOptions;
@@ -140,9 +142,19 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 	private de.tu_dresden.mgt.resource.mgt.IMgtResourcePostProcessor runningPostProcessor;
 	
 	/**
-	 * A flag to indicate whether reloading of the resource shall be cancelled.
+	 * A flag (and lock) to indicate whether reloading of the resource shall be
+	 * cancelled.
 	 */
-	private boolean terminateReload = false;
+	private Boolean terminateReload = false;
+	private Object terminateReloadLock = new Object();
+	private Object loadingLock = new Object();
+	private boolean delayNotifications = false;
+	private java.util.List<org.eclipse.emf.common.notify.Notification> delayedNotifications = new java.util.ArrayList<org.eclipse.emf.common.notify.Notification>();
+	private java.io.InputStream latestReloadInputStream = null;
+	private java.util.Map<?, ?> latestReloadOptions = null;
+	private de.tu_dresden.mgt.resource.mgt.util.MgtInterruptibleEcoreResolver interruptibleResolver;
+	
+	protected de.tu_dresden.mgt.resource.mgt.mopp.MgtMetaInformation metaInformation = new de.tu_dresden.mgt.resource.mgt.mopp.MgtMetaInformation();
 	
 	public MgtResource() {
 		super();
@@ -155,85 +167,180 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 	}
 	
 	protected void doLoad(java.io.InputStream inputStream, java.util.Map<?,?> options) throws java.io.IOException {
-		this.loadOptions = options;
-		this.terminateReload = false;
-		String encoding = null;
-		java.io.InputStream actualInputStream = inputStream;
-		Object inputStreamPreProcessorProvider = null;
-		if (options != null) {
-			inputStreamPreProcessorProvider = options.get(de.tu_dresden.mgt.resource.mgt.IMgtOptions.INPUT_STREAM_PREPROCESSOR_PROVIDER);
-		}
-		if (inputStreamPreProcessorProvider != null) {
-			if (inputStreamPreProcessorProvider instanceof de.tu_dresden.mgt.resource.mgt.IMgtInputStreamProcessorProvider) {
-				de.tu_dresden.mgt.resource.mgt.IMgtInputStreamProcessorProvider provider = (de.tu_dresden.mgt.resource.mgt.IMgtInputStreamProcessorProvider) inputStreamPreProcessorProvider;
-				de.tu_dresden.mgt.resource.mgt.mopp.MgtInputStreamProcessor processor = provider.getInputStreamProcessor(inputStream);
-				actualInputStream = processor;
-				encoding = processor.getOutputEncoding();
+		synchronized (loadingLock) {
+			if (processTerminationRequested()) {
+				return;
 			}
-		}
-		
-		parser = getMetaInformation().createParser(actualInputStream, encoding);
-		parser.setOptions(options);
-		de.tu_dresden.mgt.resource.mgt.IMgtReferenceResolverSwitch referenceResolverSwitch = getReferenceResolverSwitch();
-		referenceResolverSwitch.setOptions(options);
-		de.tu_dresden.mgt.resource.mgt.IMgtParseResult result = parser.parse();
-		clearState();
-		getContentsInternal().clear();
-		org.eclipse.emf.ecore.EObject root = null;
-		if (result != null) {
-			root = result.getRoot();
-			if (root != null) {
-				getContentsInternal().add(root);
+			this.loadOptions = options;
+			delayNotifications = true;
+			resetLocationMap();
+			String encoding = getEncoding(options);
+			java.io.InputStream actualInputStream = inputStream;
+			Object inputStreamPreProcessorProvider = null;
+			if (options != null) {
+				inputStreamPreProcessorProvider = options.get(de.tu_dresden.mgt.resource.mgt.IMgtOptions.INPUT_STREAM_PREPROCESSOR_PROVIDER);
 			}
-			java.util.Collection<de.tu_dresden.mgt.resource.mgt.IMgtCommand<de.tu_dresden.mgt.resource.mgt.IMgtTextResource>> commands = result.getPostParseCommands();
-			if (commands != null) {
-				for (de.tu_dresden.mgt.resource.mgt.IMgtCommand<de.tu_dresden.mgt.resource.mgt.IMgtTextResource>  command : commands) {
-					command.execute(this);
+			if (inputStreamPreProcessorProvider != null) {
+				if (inputStreamPreProcessorProvider instanceof de.tu_dresden.mgt.resource.mgt.IMgtInputStreamProcessorProvider) {
+					de.tu_dresden.mgt.resource.mgt.IMgtInputStreamProcessorProvider provider = (de.tu_dresden.mgt.resource.mgt.IMgtInputStreamProcessorProvider) inputStreamPreProcessorProvider;
+					de.tu_dresden.mgt.resource.mgt.mopp.MgtInputStreamProcessor processor = provider.getInputStreamProcessor(inputStream);
+					actualInputStream = processor;
 				}
 			}
-		}
-		getReferenceResolverSwitch().setOptions(options);
-		if (getErrors().isEmpty()) {
-			runPostProcessors(options);
-			if (root != null) {
-				runValidators(root);
+			
+			parser = getMetaInformation().createParser(actualInputStream, encoding);
+			parser.setOptions(options);
+			de.tu_dresden.mgt.resource.mgt.IMgtReferenceResolverSwitch referenceResolverSwitch = getReferenceResolverSwitch();
+			referenceResolverSwitch.setOptions(options);
+			de.tu_dresden.mgt.resource.mgt.IMgtParseResult result = parser.parse();
+			// dispose parser, we don't need it anymore
+			parser = null;
+			
+			if (processTerminationRequested()) {
+				// do nothing if reload was already restarted
+				return;
 			}
+			
+			clearState();
+			getContentsInternal().clear();
+			org.eclipse.emf.ecore.EObject root = null;
+			if (result != null) {
+				root = result.getRoot();
+				if (root != null) {
+					if (isLayoutInformationRecordingEnabled()) {
+						layoutUtil.transferAllLayoutInformationToModel(root);
+					}
+					if (processTerminationRequested()) {
+						// the next reload will add new content
+						return;
+					}
+					getContentsInternal().add(root);
+				}
+				java.util.Collection<de.tu_dresden.mgt.resource.mgt.IMgtCommand<de.tu_dresden.mgt.resource.mgt.IMgtTextResource>> commands = result.getPostParseCommands();
+				if (commands != null) {
+					for (de.tu_dresden.mgt.resource.mgt.IMgtCommand<de.tu_dresden.mgt.resource.mgt.IMgtTextResource>  command : commands) {
+						command.execute(this);
+					}
+				}
+			}
+			getReferenceResolverSwitch().setOptions(options);
+			if (getErrors().isEmpty()) {
+				if (!runPostProcessors(options)) {
+					return;
+				}
+				if (root != null) {
+					runValidators(root);
+				}
+			}
+			notifyDelayed();
 		}
 	}
 	
+	protected boolean processTerminationRequested() {
+		if (terminateReload) {
+			delayNotifications = false;
+			delayedNotifications.clear();
+			return true;
+		}
+		return false;
+	}
+	protected void notifyDelayed() {
+		delayNotifications = false;
+		for (org.eclipse.emf.common.notify.Notification delayedNotification : delayedNotifications) {
+			super.eNotify(delayedNotification);
+		}
+		delayedNotifications.clear();
+	}
+	public void eNotify(org.eclipse.emf.common.notify.Notification notification) {
+		if (delayNotifications) {
+			delayedNotifications.add(notification);
+		} else {
+			super.eNotify(notification);
+		}
+	}
+	/**
+	 * Reloads the contents of this resource from the given stream.
+	 */
 	public void reload(java.io.InputStream inputStream, java.util.Map<?,?> options) throws java.io.IOException {
-		try {
-			isLoaded = false;
-			java.util.Map<Object, Object> loadOptions = addDefaultLoadOptions(options);
-			doLoad(inputStream, loadOptions);
-			org.eclipse.emf.ecore.util.EcoreUtil.resolveAll(this.getResourceSet());
-		} catch (de.tu_dresden.mgt.resource.mgt.mopp.MgtTerminateParsingException tpe) {
-			// do nothing - the resource is left unchanged if this exception is thrown
+		synchronized (terminateReloadLock) {
+			latestReloadInputStream = inputStream;
+			latestReloadOptions = options;
+			if (terminateReload == true) {
+				// //reload already requested
+			}
+			terminateReload = true;
 		}
-		isLoaded = true;
+		cancelReload();
+		synchronized (loadingLock) {
+			synchronized (terminateReloadLock) {
+				terminateReload = false;
+			}
+			isLoaded = false;
+			java.util.Map<Object, Object> loadOptions = addDefaultLoadOptions(latestReloadOptions);
+			try {
+				doLoad(latestReloadInputStream, loadOptions);
+			} catch (de.tu_dresden.mgt.resource.mgt.mopp.MgtTerminateParsingException tpe) {
+				// do nothing - the resource is left unchanged if this exception is thrown
+			}
+			resolveAfterParsing();
+			isLoaded = true;
+		}
 	}
 	
-	public void cancelReload() {
+	/**
+	 * Cancels reloading this resource. The running parser and post processors are
+	 * terminated.
+	 */
+	protected void cancelReload() {
+		// Cancel parser
 		de.tu_dresden.mgt.resource.mgt.IMgtTextParser parserCopy = parser;
-		parserCopy.terminate();
-		this.terminateReload = true;
+		if (parserCopy != null) {
+			parserCopy.terminate();
+		}
+		// Cancel post processor(s)
 		de.tu_dresden.mgt.resource.mgt.IMgtResourcePostProcessor runningPostProcessorCopy = runningPostProcessor;
 		if (runningPostProcessorCopy != null) {
 			runningPostProcessorCopy.terminate();
+		}
+		// Cancel reference resolving
+		de.tu_dresden.mgt.resource.mgt.util.MgtInterruptibleEcoreResolver interruptibleResolverCopy = interruptibleResolver;
+		if (interruptibleResolverCopy != null) {
+			interruptibleResolverCopy.terminate();
 		}
 	}
 	
 	protected void doSave(java.io.OutputStream outputStream, java.util.Map<?,?> options) throws java.io.IOException {
 		de.tu_dresden.mgt.resource.mgt.IMgtTextPrinter printer = getMetaInformation().createPrinter(outputStream, this);
 		de.tu_dresden.mgt.resource.mgt.IMgtReferenceResolverSwitch referenceResolverSwitch = getReferenceResolverSwitch();
+		printer.setEncoding(getEncoding(options));
 		referenceResolverSwitch.setOptions(options);
 		for (org.eclipse.emf.ecore.EObject root : getContentsInternal()) {
+			if (isLayoutInformationRecordingEnabled()) {
+				layoutUtil.transferAllLayoutInformationFromModel(root);
+			}
 			printer.print(root);
+			if (isLayoutInformationRecordingEnabled()) {
+				layoutUtil.transferAllLayoutInformationToModel(root);
+			}
 		}
 	}
 	
 	protected String getSyntaxName() {
 		return "mgt";
+	}
+	
+	public String getEncoding(java.util.Map<?, ?> options) {
+		String encoding = null;
+		if (new de.tu_dresden.mgt.resource.mgt.util.MgtRuntimeUtil().isEclipsePlatformAvailable()) {
+			encoding = new de.tu_dresden.mgt.resource.mgt.util.MgtEclipseProxy().getPlatformResourceEncoding(uri);
+		}
+		if (options != null) {
+			Object encodingOption = options.get(de.tu_dresden.mgt.resource.mgt.IMgtOptions.OPTION_ENCODING);
+			if (encodingOption != null) {
+				encoding = encodingOption.toString();
+			}
+		}
+		return encoding;
 	}
 	
 	public de.tu_dresden.mgt.resource.mgt.IMgtReferenceResolverSwitch getReferenceResolverSwitch() {
@@ -247,8 +354,15 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 		return new de.tu_dresden.mgt.resource.mgt.mopp.MgtMetaInformation();
 	}
 	
+	/**
+	 * Clears the location map by replacing it with a new instance.
+	 */
 	protected void resetLocationMap() {
-		locationMap = new de.tu_dresden.mgt.resource.mgt.mopp.MgtLocationMap();
+		if (isLocationMapEnabled()) {
+			locationMap = new de.tu_dresden.mgt.resource.mgt.mopp.MgtLocationMap();
+		} else {
+			locationMap = new de.tu_dresden.mgt.resource.mgt.mopp.MgtDevNullLocationMap();
+		}
 	}
 	
 	public void addURIFragment(String internalURIFragment, de.tu_dresden.mgt.resource.mgt.IMgtContextDependentURIFragment<? extends org.eclipse.emf.ecore.EObject> uriFragment) {
@@ -273,8 +387,8 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 				result = uriFragment.resolve();
 			} catch (Exception e) {
 				String message = "An expection occured while resolving the proxy for: "+ id + ". (" + e.toString() + ")";
-				addProblem(new de.tu_dresden.mgt.resource.mgt.mopp.MgtProblem(message, de.tu_dresden.mgt.resource.mgt.MgtEProblemType.UNRESOLVED_REFERENCE, de.tu_dresden.mgt.resource.mgt.MgtEProblemSeverity.ERROR),uriFragment.getProxy());
-				de.tu_dresden.mgt.resource.mgt.mopp.MgtPlugin.logError(message, e);
+				addProblem(new de.tu_dresden.mgt.resource.mgt.mopp.MgtProblem(message, de.tu_dresden.mgt.resource.mgt.MgtEProblemType.UNRESOLVED_REFERENCE, de.tu_dresden.mgt.resource.mgt.MgtEProblemSeverity.ERROR), uriFragment.getProxy());
+				new de.tu_dresden.mgt.resource.mgt.util.MgtRuntimeUtil().logError(message, e);
 			}
 			if (result == null) {
 				// the resolving did call itself
@@ -312,7 +426,7 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 		}
 	}
 	
-	private org.eclipse.emf.ecore.EObject getResultElement(de.tu_dresden.mgt.resource.mgt.IMgtContextDependentURIFragment<? extends org.eclipse.emf.ecore.EObject> uriFragment, de.tu_dresden.mgt.resource.mgt.IMgtReferenceMapping<? extends org.eclipse.emf.ecore.EObject> mapping, org.eclipse.emf.ecore.EObject proxy, final String errorMessage) {
+	protected org.eclipse.emf.ecore.EObject getResultElement(de.tu_dresden.mgt.resource.mgt.IMgtContextDependentURIFragment<? extends org.eclipse.emf.ecore.EObject> uriFragment, de.tu_dresden.mgt.resource.mgt.IMgtReferenceMapping<? extends org.eclipse.emf.ecore.EObject> mapping, org.eclipse.emf.ecore.EObject proxy, final String errorMessage) {
 		if (mapping instanceof de.tu_dresden.mgt.resource.mgt.IMgtURIMapping<?>) {
 			org.eclipse.emf.common.util.URI uri = ((de.tu_dresden.mgt.resource.mgt.IMgtURIMapping<? extends org.eclipse.emf.ecore.EObject>)mapping).getTargetIdentifier();
 			if (uri != null) {
@@ -354,19 +468,19 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 		}
 	}
 	
-	private void removeDiagnostics(org.eclipse.emf.ecore.EObject cause, java.util.List<org.eclipse.emf.ecore.resource.Resource.Diagnostic> diagnostics) {
+	protected void removeDiagnostics(org.eclipse.emf.ecore.EObject cause, java.util.List<org.eclipse.emf.ecore.resource.Resource.Diagnostic> diagnostics) {
 		// remove all errors/warnings from this resource
 		for (org.eclipse.emf.ecore.resource.Resource.Diagnostic errorCand : new org.eclipse.emf.common.util.BasicEList<org.eclipse.emf.ecore.resource.Resource.Diagnostic>(diagnostics)) {
 			if (errorCand instanceof de.tu_dresden.mgt.resource.mgt.IMgtTextDiagnostic) {
 				if (((de.tu_dresden.mgt.resource.mgt.IMgtTextDiagnostic) errorCand).wasCausedBy(cause)) {
 					diagnostics.remove(errorCand);
-					de.tu_dresden.mgt.resource.mgt.mopp.MgtMarkerHelper.unmark(this, cause);
+					unmark(cause);
 				}
 			}
 		}
 	}
 	
-	private void attachResolveError(de.tu_dresden.mgt.resource.mgt.IMgtReferenceResolveResult<?> result, org.eclipse.emf.ecore.EObject proxy) {
+	protected void attachResolveError(de.tu_dresden.mgt.resource.mgt.IMgtReferenceResolveResult<?> result, org.eclipse.emf.ecore.EObject proxy) {
 		// attach errors to this resource
 		assert result != null;
 		final String errorMessage = result.getErrorMessage();
@@ -377,7 +491,7 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 		}
 	}
 	
-	private void attachResolveWarnings(de.tu_dresden.mgt.resource.mgt.IMgtReferenceResolveResult<? extends org.eclipse.emf.ecore.EObject> result, org.eclipse.emf.ecore.EObject proxy) {
+	protected void attachResolveWarnings(de.tu_dresden.mgt.resource.mgt.IMgtReferenceResolveResult<? extends org.eclipse.emf.ecore.EObject> result, org.eclipse.emf.ecore.EObject proxy) {
 		assert result != null;
 		assert result.wasResolved();
 		if (result.wasResolved()) {
@@ -401,15 +515,18 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 		loadOptions = null;
 	}
 	
-	protected void runPostProcessors(java.util.Map<?, ?> loadOptions) {
-		de.tu_dresden.mgt.resource.mgt.mopp.MgtMarkerHelper.unmark(this, de.tu_dresden.mgt.resource.mgt.MgtEProblemType.ANALYSIS_PROBLEM);
-		if (terminateReload) {
-			return;
+	/**
+	 * Runs all post processors to process this resource.
+	 */
+	protected boolean runPostProcessors(java.util.Map<?, ?> loadOptions) {
+		unmark(de.tu_dresden.mgt.resource.mgt.MgtEProblemType.ANALYSIS_PROBLEM);
+		if (processTerminationRequested()) {
+			return false;
 		}
 		// first, run the generated post processor
 		runPostProcessor(new de.tu_dresden.mgt.resource.mgt.mopp.MgtResourcePostProcessor());
 		if (loadOptions == null) {
-			return;
+			return true;
 		}
 		// then, run post processors that are registered via the load options extension
 		// point
@@ -420,8 +537,8 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 			} else if (resourcePostProcessorProvider instanceof java.util.Collection<?>) {
 				java.util.Collection<?> resourcePostProcessorProviderCollection = (java.util.Collection<?>) resourcePostProcessorProvider;
 				for (Object processorProvider : resourcePostProcessorProviderCollection) {
-					if (terminateReload) {
-						return;
+					if (processTerminationRequested()) {
+						return false;
 					}
 					if (processorProvider instanceof de.tu_dresden.mgt.resource.mgt.IMgtResourcePostProcessorProvider) {
 						de.tu_dresden.mgt.resource.mgt.IMgtResourcePostProcessorProvider csProcessorProvider = (de.tu_dresden.mgt.resource.mgt.IMgtResourcePostProcessorProvider) processorProvider;
@@ -431,14 +548,18 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 				}
 			}
 		}
+		return true;
 	}
 	
+	/**
+	 * Runs the given post processor to process this resource.
+	 */
 	protected void runPostProcessor(de.tu_dresden.mgt.resource.mgt.IMgtResourcePostProcessor postProcessor) {
 		try {
 			this.runningPostProcessor = postProcessor;
 			postProcessor.process(this);
 		} catch (Exception e) {
-			de.tu_dresden.mgt.resource.mgt.mopp.MgtPlugin.logError("Exception while running a post-processor.", e);
+			new de.tu_dresden.mgt.resource.mgt.util.MgtRuntimeUtil().logError("Exception while running a post-processor.", e);
 		}
 		this.runningPostProcessor = null;
 	}
@@ -446,7 +567,13 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 	public void load(java.util.Map<?, ?> options) throws java.io.IOException {
 		java.util.Map<Object, Object> loadOptions = addDefaultLoadOptions(options);
 		super.load(loadOptions);
-		org.eclipse.emf.ecore.util.EcoreUtil.resolveAll(this.getResourceSet());
+		resolveAfterParsing();
+	}
+	
+	protected void resolveAfterParsing() {
+		interruptibleResolver = new de.tu_dresden.mgt.resource.mgt.util.MgtInterruptibleEcoreResolver();
+		interruptibleResolver.resolveAll(this);
+		interruptibleResolver = null;
 	}
 	
 	public void setURI(org.eclipse.emf.common.util.URI uri) {
@@ -456,6 +583,10 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 		super.setURI(uri);
 	}
 	
+	/**
+	 * Returns the location map that contains information about the position of the
+	 * contents of this resource in the original textual representation.
+	 */
 	public de.tu_dresden.mgt.resource.mgt.IMgtLocationMap getLocationMap() {
 		return locationMap;
 	}
@@ -463,9 +594,18 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 	public void addProblem(de.tu_dresden.mgt.resource.mgt.IMgtProblem problem, org.eclipse.emf.ecore.EObject element) {
 		ElementBasedTextDiagnostic diagnostic = new ElementBasedTextDiagnostic(locationMap, getURI(), problem, element);
 		getDiagnostics(problem.getSeverity()).add(diagnostic);
-		if (isMarkerCreationEnabled()) {
-			de.tu_dresden.mgt.resource.mgt.mopp.MgtMarkerHelper.mark(this, diagnostic);
-		}
+		mark(diagnostic);
+		addQuickFixesToQuickFixMap(problem);
+	}
+	
+	public void addProblem(de.tu_dresden.mgt.resource.mgt.IMgtProblem problem, int column, int line, int charStart, int charEnd) {
+		PositionBasedTextDiagnostic diagnostic = new PositionBasedTextDiagnostic(getURI(), problem, column, line, charStart, charEnd);
+		getDiagnostics(problem.getSeverity()).add(diagnostic);
+		mark(diagnostic);
+		addQuickFixesToQuickFixMap(problem);
+	}
+	
+	protected void addQuickFixesToQuickFixMap(de.tu_dresden.mgt.resource.mgt.IMgtProblem problem) {
 		java.util.Collection<de.tu_dresden.mgt.resource.mgt.IMgtQuickFix> quickFixes = problem.getQuickFixes();
 		if (quickFixes != null) {
 			for (de.tu_dresden.mgt.resource.mgt.IMgtQuickFix quickFix : quickFixes) {
@@ -473,14 +613,6 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 					quickFixMap.put(quickFix.getContextAsString(), quickFix);
 				}
 			}
-		}
-	}
-	
-	public void addProblem(de.tu_dresden.mgt.resource.mgt.IMgtProblem problem, int column, int line, int charStart, int charEnd) {
-		PositionBasedTextDiagnostic diagnostic = new PositionBasedTextDiagnostic(getURI(), problem, column, line, charStart, charEnd);
-		getDiagnostics(problem.getSeverity()).add(diagnostic);
-		if (isMarkerCreationEnabled()) {
-			de.tu_dresden.mgt.resource.mgt.mopp.MgtMarkerHelper.mark(this, diagnostic);
 		}
 	}
 	
@@ -502,7 +634,7 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 		addProblem(new de.tu_dresden.mgt.resource.mgt.mopp.MgtProblem(message, type, de.tu_dresden.mgt.resource.mgt.MgtEProblemSeverity.WARNING), cause);
 	}
 	
-	private java.util.List<org.eclipse.emf.ecore.resource.Resource.Diagnostic> getDiagnostics(de.tu_dresden.mgt.resource.mgt.MgtEProblemSeverity severity) {
+	protected java.util.List<org.eclipse.emf.ecore.resource.Resource.Diagnostic> getDiagnostics(de.tu_dresden.mgt.resource.mgt.MgtEProblemSeverity severity) {
 		if (severity == de.tu_dresden.mgt.resource.mgt.MgtEProblemSeverity.ERROR) {
 			return getErrors();
 		} else {
@@ -512,59 +644,14 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 	
 	protected java.util.Map<Object, Object> addDefaultLoadOptions(java.util.Map<?, ?> loadOptions) {
 		java.util.Map<Object, Object> loadOptionsCopy = de.tu_dresden.mgt.resource.mgt.util.MgtMapUtil.copySafelyToObjectToObjectMap(loadOptions);
-		if (org.eclipse.core.runtime.Platform.isRunning()) {
-			// find default load option providers
-			org.eclipse.core.runtime.IExtensionRegistry extensionRegistry = org.eclipse.core.runtime.Platform.getExtensionRegistry();
-			org.eclipse.core.runtime.IConfigurationElement configurationElements[] = extensionRegistry.getConfigurationElementsFor(de.tu_dresden.mgt.resource.mgt.mopp.MgtPlugin.EP_DEFAULT_LOAD_OPTIONS_ID);
-			for (org.eclipse.core.runtime.IConfigurationElement element : configurationElements) {
-				try {
-					de.tu_dresden.mgt.resource.mgt.IMgtOptionProvider provider = (de.tu_dresden.mgt.resource.mgt.IMgtOptionProvider) element.createExecutableExtension("class");
-					final java.util.Map<?, ?> options = provider.getOptions();
-					final java.util.Collection<?> keys = options.keySet();
-					for (Object key : keys) {
-						addLoadOption(loadOptionsCopy, key, options.get(key));
-					}
-				} catch (org.eclipse.core.runtime.CoreException ce) {
-					de.tu_dresden.mgt.resource.mgt.mopp.MgtPlugin.logError("Exception while getting default options.", ce);
-				}
-			}
+		// first add static option provider
+		loadOptionsCopy.putAll(new de.tu_dresden.mgt.resource.mgt.mopp.MgtOptionProvider().getOptions());
+		
+		// second, add dynamic option providers that are registered via extension
+		if (new de.tu_dresden.mgt.resource.mgt.util.MgtRuntimeUtil().isEclipsePlatformAvailable()) {
+			new de.tu_dresden.mgt.resource.mgt.util.MgtEclipseProxy().getDefaultLoadOptionProviderExtensions(loadOptionsCopy);
 		}
 		return loadOptionsCopy;
-	}
-	
-	/**
-	 * Adds a new key,value pair to the list of options. If there is already an option
-	 * with the same key, the two values are collected in a list.
-	 */
-	private void addLoadOption(java.util.Map<Object, Object> options,Object key, Object value) {
-		// check if there is already an option set
-		if (options.containsKey(key)) {
-			Object currentValue = options.get(key);
-			if (currentValue instanceof java.util.List<?>) {
-				// if the current value is a list, we add the new value to this list
-				java.util.List<?> currentValueAsList = (java.util.List<?>) currentValue;
-				java.util.List<Object> currentValueAsObjectList = de.tu_dresden.mgt.resource.mgt.util.MgtListUtil.copySafelyToObjectList(currentValueAsList);
-				if (value instanceof java.util.Collection<?>) {
-					currentValueAsObjectList.addAll((java.util.Collection<?>) value);
-				} else {
-					currentValueAsObjectList.add(value);
-				}
-				options.put(key, currentValueAsObjectList);
-			} else {
-				// if the current value is not a list, we create a fresh list and add both the old
-				// (current) and the new value to this list
-				java.util.List<Object> newValueList = new java.util.ArrayList<Object>();
-				newValueList.add(currentValue);
-				if (value instanceof java.util.Collection<?>) {
-					newValueList.addAll((java.util.Collection<?>) value);
-				} else {
-					newValueList.add(value);
-				}
-				options.put(key, newValueList);
-			}
-		} else {
-			options.put(key, value);
-		}
 	}
 	
 	/**
@@ -577,11 +664,9 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 		internalURIFragmentMap.clear();
 		getErrors().clear();
 		getWarnings().clear();
-		if (isMarkerCreationEnabled()) {
-			de.tu_dresden.mgt.resource.mgt.mopp.MgtMarkerHelper.unmark(this, de.tu_dresden.mgt.resource.mgt.MgtEProblemType.UNKNOWN);
-			de.tu_dresden.mgt.resource.mgt.mopp.MgtMarkerHelper.unmark(this, de.tu_dresden.mgt.resource.mgt.MgtEProblemType.SYNTAX_ERROR);
-			de.tu_dresden.mgt.resource.mgt.mopp.MgtMarkerHelper.unmark(this, de.tu_dresden.mgt.resource.mgt.MgtEProblemType.UNRESOLVED_REFERENCE);
-		}
+		unmark(de.tu_dresden.mgt.resource.mgt.MgtEProblemType.UNKNOWN);
+		unmark(de.tu_dresden.mgt.resource.mgt.MgtEProblemType.SYNTAX_ERROR);
+		unmark(de.tu_dresden.mgt.resource.mgt.MgtEProblemType.UNRESOLVED_REFERENCE);
 		proxyCounter = 0;
 		resolverSwitch = null;
 	}
@@ -593,81 +678,89 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 	 * interfere when changing the list.
 	 */
 	public org.eclipse.emf.common.util.EList<org.eclipse.emf.ecore.EObject> getContents() {
+		if (terminateReload) {
+			// the contents' state is currently unclear
+			return new org.eclipse.emf.common.util.BasicEList<org.eclipse.emf.ecore.EObject>();
+		}
 		return new de.tu_dresden.mgt.resource.mgt.util.MgtCopiedEObjectInternalEList((org.eclipse.emf.ecore.util.InternalEList<org.eclipse.emf.ecore.EObject>) super.getContents());
 	}
 	
 	/**
-	 * Returns the raw contents of this resource.
+	 * Returns the raw contents of this resource. In contrast to getContents(), this
+	 * methods does not return a copy of the content list, but the original list.
 	 */
 	public org.eclipse.emf.common.util.EList<org.eclipse.emf.ecore.EObject> getContentsInternal() {
+		if (terminateReload) {
+			// the contents' state is currently unclear
+			return new org.eclipse.emf.common.util.BasicEList<org.eclipse.emf.ecore.EObject>();
+		}
 		return super.getContents();
 	}
 	
+	/**
+	 * Returns all warnings that are associated with this resource.
+	 */
 	public org.eclipse.emf.common.util.EList<org.eclipse.emf.ecore.resource.Resource.Diagnostic> getWarnings() {
+		if (terminateReload) {
+			// the contents' state is currently unclear
+			return new org.eclipse.emf.common.util.BasicEList<org.eclipse.emf.ecore.resource.Resource.Diagnostic>();
+		}
 		return new de.tu_dresden.mgt.resource.mgt.util.MgtCopiedEList<org.eclipse.emf.ecore.resource.Resource.Diagnostic>(super.getWarnings());
 	}
 	
+	/**
+	 * Returns all errors that are associated with this resource.
+	 */
 	public org.eclipse.emf.common.util.EList<org.eclipse.emf.ecore.resource.Resource.Diagnostic> getErrors() {
+		if (terminateReload) {
+			// the contents' state is currently unclear
+			return new org.eclipse.emf.common.util.BasicEList<org.eclipse.emf.ecore.resource.Resource.Diagnostic>();
+		}
 		return new de.tu_dresden.mgt.resource.mgt.util.MgtCopiedEList<org.eclipse.emf.ecore.resource.Resource.Diagnostic>(super.getErrors());
 	}
 	
-	@SuppressWarnings("restriction")	
-	private void runValidators(org.eclipse.emf.ecore.EObject root) {
-		// checking constraints provided by EMF validator classes was disabled
+	protected void runValidators(org.eclipse.emf.ecore.EObject root) {
+		// checking constraints provided by EMF validator classes was disabled by option
+		// 'disableEValidators'.
 		
-		// check EMF validation constraints
-		// EMF validation does not work if OSGi is not running
-		// The EMF validation framework code throws a NPE if the validation plug-in is not
-		// loaded. This is a bug, which is fixed in the Helios release. Nonetheless, we
-		// need to catch the exception here.
-		if (org.eclipse.core.runtime.Platform.isRunning()) {
-			// The EMF validation framework code throws a NPE if the validation plug-in is not
-			// loaded. This is a workaround for bug 322079.
-			if (org.eclipse.emf.validation.internal.EMFModelValidationPlugin.getPlugin() != null) {
-				try {
-					org.eclipse.emf.validation.service.ModelValidationService service = org.eclipse.emf.validation.service.ModelValidationService.getInstance();
-					org.eclipse.emf.validation.service.IBatchValidator validator = service.<org.eclipse.emf.ecore.EObject, org.eclipse.emf.validation.service.IBatchValidator>newValidator(org.eclipse.emf.validation.model.EvaluationMode.BATCH);
-					validator.setIncludeLiveConstraints(true);
-					org.eclipse.core.runtime.IStatus status = validator.validate(root);
-					addStatus(status, root);
-				} catch (Throwable t) {
-					de.tu_dresden.mgt.resource.mgt.mopp.MgtPlugin.logError("Exception while checking contraints provided by EMF validator classes.", t);
-				}
-			}
-		}
-	}
-	
-	private void addStatus(org.eclipse.core.runtime.IStatus status, org.eclipse.emf.ecore.EObject root) {
-		java.util.List<org.eclipse.emf.ecore.EObject> causes = new java.util.ArrayList<org.eclipse.emf.ecore.EObject>();
-		causes.add(root);
-		if (status instanceof org.eclipse.emf.validation.model.ConstraintStatus) {
-			org.eclipse.emf.validation.model.ConstraintStatus constraintStatus = (org.eclipse.emf.validation.model.ConstraintStatus) status;
-			java.util.Set<org.eclipse.emf.ecore.EObject> resultLocus = constraintStatus.getResultLocus();
-			causes.clear();
-			causes.addAll(resultLocus);
-		}
-		boolean hasChildren = status.getChildren() != null && status.getChildren().length > 0;
-		// Ignore composite status objects that have children. The actual status
-		// information is then contained in the child objects.
-		if (!status.isMultiStatus() || !hasChildren) {
-			if (status.getSeverity() == org.eclipse.core.runtime.IStatus.ERROR) {
-				for (org.eclipse.emf.ecore.EObject cause : causes) {
-					addError(status.getMessage(), de.tu_dresden.mgt.resource.mgt.MgtEProblemType.ANALYSIS_PROBLEM, cause);
-				}
-			}
-			if (status.getSeverity() == org.eclipse.core.runtime.IStatus.WARNING) {
-				for (org.eclipse.emf.ecore.EObject cause : causes) {
-					addWarning(status.getMessage(), de.tu_dresden.mgt.resource.mgt.MgtEProblemType.ANALYSIS_PROBLEM, cause);
-				}
-			}
-		}
-		for (org.eclipse.core.runtime.IStatus child : status.getChildren()) {
-			addStatus(child, root);
+		if (new de.tu_dresden.mgt.resource.mgt.util.MgtRuntimeUtil().isEclipsePlatformAvailable()) {
+			new de.tu_dresden.mgt.resource.mgt.util.MgtEclipseProxy().checkEMFValidationConstraints(this, root);
 		}
 	}
 	
 	public de.tu_dresden.mgt.resource.mgt.IMgtQuickFix getQuickFix(String quickFixContext) {
 		return quickFixMap.get(quickFixContext);
+	}
+	
+	protected void mark(de.tu_dresden.mgt.resource.mgt.IMgtTextDiagnostic diagnostic) {
+		de.tu_dresden.mgt.resource.mgt.mopp.MgtMarkerHelper markerHelper = getMarkerHelper();
+		if (markerHelper != null) {
+			markerHelper.mark(this, diagnostic);
+		}
+	}
+	
+	protected void unmark(org.eclipse.emf.ecore.EObject cause) {
+		de.tu_dresden.mgt.resource.mgt.mopp.MgtMarkerHelper markerHelper = getMarkerHelper();
+		if (markerHelper != null) {
+			markerHelper.unmark(this, cause);
+		}
+	}
+	
+	protected void unmark(de.tu_dresden.mgt.resource.mgt.MgtEProblemType analysisProblem) {
+		de.tu_dresden.mgt.resource.mgt.mopp.MgtMarkerHelper markerHelper = getMarkerHelper();
+		if (markerHelper != null) {
+			markerHelper.unmark(this, analysisProblem);
+		}
+	}
+	
+	protected de.tu_dresden.mgt.resource.mgt.mopp.MgtMarkerHelper getMarkerHelper() {
+		if (isMarkerCreationEnabled() && new de.tu_dresden.mgt.resource.mgt.util.MgtRuntimeUtil().isEclipsePlatformAvailable()) {
+			if (markerHelper == null) {
+				markerHelper = new de.tu_dresden.mgt.resource.mgt.mopp.MgtMarkerHelper();
+			}
+			return markerHelper;
+		}
+		return null;
 	}
 	
 	public boolean isMarkerCreationEnabled() {
@@ -676,4 +769,19 @@ public class MgtResource extends org.eclipse.emf.ecore.resource.impl.ResourceImp
 		}
 		return !loadOptions.containsKey(de.tu_dresden.mgt.resource.mgt.IMgtOptions.DISABLE_CREATING_MARKERS_FOR_PROBLEMS);
 	}
+	
+	protected boolean isLocationMapEnabled() {
+		if (loadOptions == null) {
+			return true;
+		}
+		return !loadOptions.containsKey(de.tu_dresden.mgt.resource.mgt.IMgtOptions.DISABLE_LOCATION_MAP);
+	}
+	
+	protected boolean isLayoutInformationRecordingEnabled() {
+		if (loadOptions == null) {
+			return true;
+		}
+		return !loadOptions.containsKey(de.tu_dresden.mgt.resource.mgt.IMgtOptions.DISABLE_LAYOUT_INFORMATION_RECORDING);
+	}
+	
 }

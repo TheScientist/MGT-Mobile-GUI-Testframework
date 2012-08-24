@@ -33,12 +33,10 @@ import de.tud.mgt.SoloId;
 
 public class AndroidAdapter implements IAdapter{
 
-	@Override
 	public String getAdapterName() {
 		return "androidAdapter";
 	}
 	
-	@Override
 	public Set<String> getAssertionProposals() {
 		Set<String> assertions = new HashSet<String>();
 		try {
@@ -54,7 +52,6 @@ public class AndroidAdapter implements IAdapter{
 		return assertions;
 	}
 
-	@Override
 	public Set<String> getElementIds(String aut) {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(aut);
 		if(project == null || !project.exists()) {
@@ -119,13 +116,11 @@ public class AndroidAdapter implements IAdapter{
 		return proposals;
 	}
 
-	@Override
 	public TestSuite runTest(TestSuite suite, Properties props) {
 		TestRunner runner = new TestRunner(suite, props);
 		return runner.run();
 	}
 
-	@Override
 	public Collection<String> getKeywords() {
 		Collection<String> keywords = new HashSet<String>();
 		try {
@@ -170,5 +165,5 @@ public class AndroidAdapter implements IAdapter{
 //			System.out.println(key);
 //		}
 		return keywords;
-	}	
+	}
 }

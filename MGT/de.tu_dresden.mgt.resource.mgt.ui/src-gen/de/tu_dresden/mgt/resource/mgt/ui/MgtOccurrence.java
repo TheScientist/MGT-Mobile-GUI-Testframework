@@ -77,6 +77,9 @@ public class MgtOccurrence {
 		}
 		int caretOffset = textWidget.getCaretOffset();
 		caretOffset = projectionViewer.widgetOffset2ModelOffset(caretOffset);
+		if (textResource == null) {
+			return null;
+		}
 		de.tu_dresden.mgt.resource.mgt.IMgtLocationMap locationMap = textResource.getLocationMap();
 		java.util.List<org.eclipse.emf.ecore.EObject> elementsAtOffset = locationMap.getElementsAt(caretOffset);
 		
@@ -183,8 +186,7 @@ public class MgtOccurrence {
 		de.tu_dresden.mgt.resource.mgt.IMgtLocationMap locationMap = textResource.getLocationMap();
 		org.eclipse.jface.text.rules.IToken token;
 		int defPosition = -1;
-		boolean isNull = definitionElement == null;
-		if (isNull) {
+		if (definitionElement == null) {
 			definitionElement = elementsAtDefinition.get(0);
 		}
 		org.eclipse.emf.ecore.resource.Resource resource = definitionElement.eResource();
@@ -212,7 +214,7 @@ public class MgtOccurrence {
 			if (text != null && text.equals(tokenText) && tokenScanner.getTokenOffset() != defPosition) {
 				occEO = tryToResolve(locationMap.getElementsAt(tokenScanner.getTokenOffset()));
 				if (occEO != null) {
-					if ((isNull && elementsAtDefinition.contains(occEO)) || !isNull && definitionElement.equals(occEO)) {
+					if (elementsAtDefinition.contains(occEO) || definitionElement.equals(occEO)) {
 						addAnnotation(document, de.tu_dresden.mgt.resource.mgt.ui.MgtPositionCategory.PROXY, text);
 					}
 				}

@@ -58,68 +58,8 @@ public class AbstractMgtInterpreter<ResultType, ContextType> {
 	
 	public ResultType interprete(org.eclipse.emf.ecore.EObject object, ContextType context) {
 		ResultType result = null;
-		if (object instanceof de.tu_dresden.mgt.Float) {
-			result = interprete_de_tu_005fdresden_mgt_Float((de.tu_dresden.mgt.Float) object, context);
-		}
-		if (result != null) {
-			return result;
-		}
-		if (object instanceof de.tu_dresden.mgt.SequentialStep) {
-			result = interprete_de_tu_005fdresden_mgt_SequentialStep((de.tu_dresden.mgt.SequentialStep) object, context);
-		}
-		if (result != null) {
-			return result;
-		}
-		if (object instanceof de.tu_dresden.mgt.Sequence) {
-			result = interprete_de_tu_005fdresden_mgt_Sequence((de.tu_dresden.mgt.Sequence) object, context);
-		}
-		if (result != null) {
-			return result;
-		}
-		if (object instanceof de.tu_dresden.mgt.UIElementLocator) {
-			result = interprete_de_tu_005fdresden_mgt_UIElementLocator((de.tu_dresden.mgt.UIElementLocator) object, context);
-		}
-		if (result != null) {
-			return result;
-		}
-		if (object instanceof de.tu_dresden.mgt.Keyword) {
-			result = interprete_de_tu_005fdresden_mgt_Keyword((de.tu_dresden.mgt.Keyword) object, context);
-		}
-		if (result != null) {
-			return result;
-		}
-		if (object instanceof de.tu_dresden.mgt.Assertion) {
-			result = interprete_de_tu_005fdresden_mgt_Assertion((de.tu_dresden.mgt.Assertion) object, context);
-		}
-		if (result != null) {
-			return result;
-		}
-		if (object instanceof de.tu_dresden.mgt.String) {
-			result = interprete_de_tu_005fdresden_mgt_String((de.tu_dresden.mgt.String) object, context);
-		}
-		if (result != null) {
-			return result;
-		}
-		if (object instanceof de.tu_dresden.mgt.Boolean) {
-			result = interprete_de_tu_005fdresden_mgt_Boolean((de.tu_dresden.mgt.Boolean) object, context);
-		}
-		if (result != null) {
-			return result;
-		}
-		if (object instanceof de.tu_dresden.mgt.Integer) {
-			result = interprete_de_tu_005fdresden_mgt_Integer((de.tu_dresden.mgt.Integer) object, context);
-		}
-		if (result != null) {
-			return result;
-		}
-		if (object instanceof de.tu_dresden.mgt.TestDate) {
-			result = interprete_de_tu_005fdresden_mgt_TestDate((de.tu_dresden.mgt.TestDate) object, context);
-		}
-		if (result != null) {
-			return result;
-		}
-		if (object instanceof de.tu_dresden.mgt.AbstractTestStep) {
-			result = interprete_de_tu_005fdresden_mgt_AbstractTestStep((de.tu_dresden.mgt.AbstractTestStep) object, context);
+		if (object instanceof de.tu_dresden.mgt.TestSuite) {
+			result = interprete_de_tu_005fdresden_mgt_TestSuite((de.tu_dresden.mgt.TestSuite) object, context);
 		}
 		if (result != null) {
 			return result;
@@ -130,8 +70,68 @@ public class AbstractMgtInterpreter<ResultType, ContextType> {
 		if (result != null) {
 			return result;
 		}
-		if (object instanceof de.tu_dresden.mgt.TestSuite) {
-			result = interprete_de_tu_005fdresden_mgt_TestSuite((de.tu_dresden.mgt.TestSuite) object, context);
+		if (object instanceof de.tu_dresden.mgt.AbstractTestStep) {
+			result = interprete_de_tu_005fdresden_mgt_AbstractTestStep((de.tu_dresden.mgt.AbstractTestStep) object, context);
+		}
+		if (result != null) {
+			return result;
+		}
+		if (object instanceof de.tu_dresden.mgt.Integer) {
+			result = interprete_de_tu_005fdresden_mgt_Integer((de.tu_dresden.mgt.Integer) object, context);
+		}
+		if (result != null) {
+			return result;
+		}
+		if (object instanceof de.tu_dresden.mgt.Boolean) {
+			result = interprete_de_tu_005fdresden_mgt_Boolean((de.tu_dresden.mgt.Boolean) object, context);
+		}
+		if (result != null) {
+			return result;
+		}
+		if (object instanceof de.tu_dresden.mgt.String) {
+			result = interprete_de_tu_005fdresden_mgt_String((de.tu_dresden.mgt.String) object, context);
+		}
+		if (result != null) {
+			return result;
+		}
+		if (object instanceof de.tu_dresden.mgt.TestDate) {
+			result = interprete_de_tu_005fdresden_mgt_TestDate((de.tu_dresden.mgt.TestDate) object, context);
+		}
+		if (result != null) {
+			return result;
+		}
+		if (object instanceof de.tu_dresden.mgt.Assertion) {
+			result = interprete_de_tu_005fdresden_mgt_Assertion((de.tu_dresden.mgt.Assertion) object, context);
+		}
+		if (result != null) {
+			return result;
+		}
+		if (object instanceof de.tu_dresden.mgt.Keyword) {
+			result = interprete_de_tu_005fdresden_mgt_Keyword((de.tu_dresden.mgt.Keyword) object, context);
+		}
+		if (result != null) {
+			return result;
+		}
+		if (object instanceof de.tu_dresden.mgt.UIElementLocator) {
+			result = interprete_de_tu_005fdresden_mgt_UIElementLocator((de.tu_dresden.mgt.UIElementLocator) object, context);
+		}
+		if (result != null) {
+			return result;
+		}
+		if (object instanceof de.tu_dresden.mgt.Sequence) {
+			result = interprete_de_tu_005fdresden_mgt_Sequence((de.tu_dresden.mgt.Sequence) object, context);
+		}
+		if (result != null) {
+			return result;
+		}
+		if (object instanceof de.tu_dresden.mgt.SequentialStep) {
+			result = interprete_de_tu_005fdresden_mgt_SequentialStep((de.tu_dresden.mgt.SequentialStep) object, context);
+		}
+		if (result != null) {
+			return result;
+		}
+		if (object instanceof de.tu_dresden.mgt.Float) {
+			result = interprete_de_tu_005fdresden_mgt_Float((de.tu_dresden.mgt.Float) object, context);
 		}
 		if (result != null) {
 			return result;
@@ -139,55 +139,55 @@ public class AbstractMgtInterpreter<ResultType, ContextType> {
 		return result;
 	}
 	
-	public ResultType interprete_de_tu_005fdresden_mgt_TestSuite(de.tu_dresden.mgt.TestSuite object, ContextType context) {
+	public ResultType interprete_de_tu_005fdresden_mgt_TestSuite(de.tu_dresden.mgt.TestSuite testSuite, ContextType context) {
 		return null;
 	}
 	
-	public ResultType interprete_de_tu_005fdresden_mgt_TestCase(de.tu_dresden.mgt.TestCase object, ContextType context) {
+	public ResultType interprete_de_tu_005fdresden_mgt_TestCase(de.tu_dresden.mgt.TestCase testCase, ContextType context) {
 		return null;
 	}
 	
-	public ResultType interprete_de_tu_005fdresden_mgt_AbstractTestStep(de.tu_dresden.mgt.AbstractTestStep object, ContextType context) {
+	public ResultType interprete_de_tu_005fdresden_mgt_AbstractTestStep(de.tu_dresden.mgt.AbstractTestStep abstractTestStep, ContextType context) {
 		return null;
 	}
 	
-	public ResultType interprete_de_tu_005fdresden_mgt_TestDate(de.tu_dresden.mgt.TestDate object, ContextType context) {
+	public ResultType interprete_de_tu_005fdresden_mgt_TestDate(de.tu_dresden.mgt.TestDate testDate, ContextType context) {
 		return null;
 	}
 	
-	public ResultType interprete_de_tu_005fdresden_mgt_Integer(de.tu_dresden.mgt.Integer object, ContextType context) {
+	public ResultType interprete_de_tu_005fdresden_mgt_Integer(de.tu_dresden.mgt.Integer integer, ContextType context) {
 		return null;
 	}
 	
-	public ResultType interprete_de_tu_005fdresden_mgt_Boolean(de.tu_dresden.mgt.Boolean object, ContextType context) {
+	public ResultType interprete_de_tu_005fdresden_mgt_Boolean(de.tu_dresden.mgt.Boolean _boolean, ContextType context) {
 		return null;
 	}
 	
-	public ResultType interprete_de_tu_005fdresden_mgt_String(de.tu_dresden.mgt.String object, ContextType context) {
+	public ResultType interprete_de_tu_005fdresden_mgt_String(de.tu_dresden.mgt.String string, ContextType context) {
 		return null;
 	}
 	
-	public ResultType interprete_de_tu_005fdresden_mgt_Assertion(de.tu_dresden.mgt.Assertion object, ContextType context) {
+	public ResultType interprete_de_tu_005fdresden_mgt_Assertion(de.tu_dresden.mgt.Assertion assertion, ContextType context) {
 		return null;
 	}
 	
-	public ResultType interprete_de_tu_005fdresden_mgt_Keyword(de.tu_dresden.mgt.Keyword object, ContextType context) {
+	public ResultType interprete_de_tu_005fdresden_mgt_Keyword(de.tu_dresden.mgt.Keyword keyword, ContextType context) {
 		return null;
 	}
 	
-	public ResultType interprete_de_tu_005fdresden_mgt_UIElementLocator(de.tu_dresden.mgt.UIElementLocator object, ContextType context) {
+	public ResultType interprete_de_tu_005fdresden_mgt_UIElementLocator(de.tu_dresden.mgt.UIElementLocator uIElementLocator, ContextType context) {
 		return null;
 	}
 	
-	public ResultType interprete_de_tu_005fdresden_mgt_Sequence(de.tu_dresden.mgt.Sequence object, ContextType context) {
+	public ResultType interprete_de_tu_005fdresden_mgt_Sequence(de.tu_dresden.mgt.Sequence sequence, ContextType context) {
 		return null;
 	}
 	
-	public ResultType interprete_de_tu_005fdresden_mgt_SequentialStep(de.tu_dresden.mgt.SequentialStep object, ContextType context) {
+	public ResultType interprete_de_tu_005fdresden_mgt_SequentialStep(de.tu_dresden.mgt.SequentialStep sequentialStep, ContextType context) {
 		return null;
 	}
 	
-	public ResultType interprete_de_tu_005fdresden_mgt_Float(de.tu_dresden.mgt.Float object, ContextType context) {
+	public ResultType interprete_de_tu_005fdresden_mgt_Float(de.tu_dresden.mgt.Float _float, ContextType context) {
 		return null;
 	}
 	

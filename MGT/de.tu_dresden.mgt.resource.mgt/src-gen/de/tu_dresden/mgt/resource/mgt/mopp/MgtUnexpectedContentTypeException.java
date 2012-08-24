@@ -11,7 +11,7 @@ package de.tu_dresden.mgt.resource.mgt.mopp;
  * 
  * @see de.tu_dresden.mgt.resource.mgt.IMgtOptions.RESOURCE_CONTENT_TYPE
  */
-public class MgtUnexpectedContentTypeException extends org.antlr.runtime3_3_0.RecognitionException {
+public class MgtUnexpectedContentTypeException extends org.antlr.runtime3_4_0.RecognitionException {
 	
 	private static final long serialVersionUID = 4791359811519433999L;
 	

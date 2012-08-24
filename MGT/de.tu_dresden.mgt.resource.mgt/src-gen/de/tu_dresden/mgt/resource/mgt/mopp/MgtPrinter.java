@@ -19,6 +19,7 @@ public class MgtPrinter implements de.tu_dresden.mgt.resource.mgt.IMgtTextPrinte
 	private de.tu_dresden.mgt.resource.mgt.IMgtTextResource resource;
 	
 	private java.util.Map<?, ?> options;
+	private String encoding = System.getProperty("file.encoding");
 	
 	public MgtPrinter(java.io.OutputStream outputStream, de.tu_dresden.mgt.resource.mgt.IMgtTextResource resource) {
 		super();
@@ -120,6 +121,16 @@ public class MgtPrinter implements de.tu_dresden.mgt.resource.mgt.IMgtTextPrinte
 		return options;
 	}
 	
+	public void setEncoding(String encoding) {
+		if (encoding != null) {
+			this.encoding = encoding;
+		}
+	}
+	
+	public String getEncoding() {
+		return encoding;
+	}
+	
 	public de.tu_dresden.mgt.resource.mgt.IMgtTextResource getResource() {
 		return resource;
 	}
@@ -128,8 +139,8 @@ public class MgtPrinter implements de.tu_dresden.mgt.resource.mgt.IMgtTextPrinte
 	 * Calls {@link #doPrint(EObject, PrintWriter, String)} and writes the result to
 	 * the underlying output stream.
 	 */
-	public void print(org.eclipse.emf.ecore.EObject element) {
-		java.io.PrintWriter out = new java.io.PrintWriter(new java.io.BufferedOutputStream(outputStream));
+	public void print(org.eclipse.emf.ecore.EObject element) throws java.io.IOException {
+		java.io.PrintWriter out = new java.io.PrintWriter(new java.io.OutputStreamWriter(new java.io.BufferedOutputStream(outputStream), encoding));
 		doPrint(element, out, "");
 		out.flush();
 		out.close();

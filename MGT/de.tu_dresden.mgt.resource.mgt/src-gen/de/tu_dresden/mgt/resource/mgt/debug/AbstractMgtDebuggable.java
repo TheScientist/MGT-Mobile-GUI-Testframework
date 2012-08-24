@@ -28,7 +28,7 @@ public abstract class AbstractMgtDebuggable {
 			// starting event server socket done (connection established).
 			outputStream = new java.io.PrintStream(accept.getOutputStream());
 		} catch (Exception e) {
-			de.tu_dresden.mgt.resource.mgt.mopp.MgtPlugin.logError("Can't create socket connection while launching.", e);
+			new de.tu_dresden.mgt.resource.mgt.util.MgtRuntimeUtil().logError("Can't create socket connection while launching.", e);
 		}
 	}
 	
@@ -36,7 +36,7 @@ public abstract class AbstractMgtDebuggable {
 		try {
 			server.close();
 		} catch (java.io.IOException e) {
-			de.tu_dresden.mgt.resource.mgt.mopp.MgtPlugin.logError("Exception while closing socket.", e);
+			new de.tu_dresden.mgt.resource.mgt.util.MgtRuntimeUtil().logError("Exception while closing socket.", e);
 		}
 	}
 	

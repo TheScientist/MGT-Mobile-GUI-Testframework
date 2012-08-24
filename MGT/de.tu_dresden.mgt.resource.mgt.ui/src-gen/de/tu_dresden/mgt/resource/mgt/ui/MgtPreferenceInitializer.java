@@ -11,8 +11,6 @@ package de.tu_dresden.mgt.resource.mgt.ui;
  */
 public class MgtPreferenceInitializer extends org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer {
 	
-	private final static de.tu_dresden.mgt.resource.mgt.ui.MgtAntlrTokenHelper tokenHelper = new de.tu_dresden.mgt.resource.mgt.ui.MgtAntlrTokenHelper();
-	
 	public void initializeDefaultPreferences() {
 		
 		initializeDefaultSyntaxHighlighting();
@@ -48,21 +46,14 @@ public class MgtPreferenceInitializer extends org.eclipse.core.runtime.preferenc
 		store.setDefault(languageId + de.tu_dresden.mgt.resource.mgt.ui.MgtPreferenceConstants.EDITOR_BRACKETS_SUFFIX, bracketSet.getBracketString());
 	}
 	
-	private void initializeDefaultSyntaxHighlighting(org.eclipse.jface.preference.IPreferenceStore store, de.tu_dresden.mgt.resource.mgt.IMgtMetaInformation metaInformation) {
+	private void initializeDefaultSyntaxHighlighting(org.eclipse.jface.preference.IPreferenceStore store, de.tu_dresden.mgt.resource.mgt.mopp.MgtMetaInformation metaInformation) {
 		String languageId = metaInformation.getSyntaxName();
-		String[] tokenNames = metaInformation.getTokenNames();
+		String[] tokenNames = metaInformation.getSyntaxHighlightableTokenNames();
 		if (tokenNames == null) {
 			return;
 		}
 		for (int i = 0; i < tokenNames.length; i++) {
-			if (!tokenHelper.canBeUsedForSyntaxHighlighting(i)) {
-				continue;
-			}
-			
-			String tokenName = tokenHelper.getTokenName(tokenNames, i);
-			if (tokenName == null) {
-				continue;
-			}
+			String tokenName = tokenNames[i];
 			de.tu_dresden.mgt.resource.mgt.IMgtTokenStyle style = metaInformation.getDefaultTokenStyle(tokenName);
 			if (style != null) {
 				String color = getColorString(style.getColorAsRGB());

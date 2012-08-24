@@ -49,7 +49,7 @@ public class MgtMetaInformation implements de.tu_dresden.mgt.resource.mgt.IMgtMe
 	}
 	
 	public String[] getTokenNames() {
-		return new de.tu_dresden.mgt.resource.mgt.mopp.MgtParser(null).getTokenNames();
+		return de.tu_dresden.mgt.resource.mgt.mopp.MgtParser.tokenNames;
 	}
 	
 	public de.tu_dresden.mgt.resource.mgt.IMgtTokenStyle getDefaultTokenStyle(String tokenName) {
@@ -98,6 +98,29 @@ public class MgtMetaInformation implements de.tu_dresden.mgt.resource.mgt.IMgtMe
 	
 	public String getLaunchConfigurationType() {
 		return "de.tu_dresden.mgt.resource.mgt.ui.launchConfigurationType";
+	}
+	
+	public de.tu_dresden.mgt.resource.mgt.IMgtNameProvider createNameProvider() {
+		return new de.tu_dresden.mgt.resource.mgt.analysis.MgtDefaultNameProvider();
+	}
+	
+	public String[] getSyntaxHighlightableTokenNames() {
+		de.tu_dresden.mgt.resource.mgt.mopp.MgtAntlrTokenHelper tokenHelper = new de.tu_dresden.mgt.resource.mgt.mopp.MgtAntlrTokenHelper();
+		java.util.List<String> highlightableTokens = new java.util.ArrayList<String>();
+		String[] parserTokenNames = getTokenNames();
+		for (int i = 0; i < parserTokenNames.length; i++) {
+			// If ANTLR is used we need to normalize the token names
+			if (!tokenHelper.canBeUsedForSyntaxHighlighting(i)) {
+				continue;
+			}
+			String tokenName = tokenHelper.getTokenName(parserTokenNames, i);
+			if (tokenName == null) {
+				continue;
+			}
+			highlightableTokens.add(tokenName);
+		}
+		highlightableTokens.add(de.tu_dresden.mgt.resource.mgt.mopp.MgtTokenStyleInformationProvider.TASK_ITEM_TOKEN_NAME);
+		return highlightableTokens.toArray(new String[highlightableTokens.size()]);
 	}
 	
 }

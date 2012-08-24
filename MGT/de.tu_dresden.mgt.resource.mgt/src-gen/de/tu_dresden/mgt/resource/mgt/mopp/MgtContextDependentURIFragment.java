@@ -37,7 +37,7 @@ public abstract class MgtContextDependentURIFragment<ContainerType extends org.e
 		return result != null;
 	}
 	
-	public synchronized de.tu_dresden.mgt.resource.mgt.IMgtReferenceResolveResult<ReferenceType> resolve() {
+	public de.tu_dresden.mgt.resource.mgt.IMgtReferenceResolveResult<ReferenceType> resolve() {
 		if (resolving) {
 			return null;
 		}
@@ -77,7 +77,7 @@ public abstract class MgtContextDependentURIFragment<ContainerType extends org.e
 			} else if (list != null) {
 				addResultToList(mapping, proxy, list);
 			} else {
-				de.tu_dresden.mgt.resource.mgt.mopp.MgtPlugin.logError(container.eClass().getName() + "." + reference.getName() + " has multiplicity 1 but was resolved to multiple elements", null);
+				new de.tu_dresden.mgt.resource.mgt.util.MgtRuntimeUtil().logError(container.eClass().getName() + "." + reference.getName() + " has multiplicity 1 but was resolved to multiple elements", null);
 			}
 		}
 	}

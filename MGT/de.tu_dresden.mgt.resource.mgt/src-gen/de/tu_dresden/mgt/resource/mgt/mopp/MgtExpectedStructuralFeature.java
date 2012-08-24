@@ -23,6 +23,13 @@ public class MgtExpectedStructuralFeature extends de.tu_dresden.mgt.resource.mgt
 		return placeholder.getFeature();
 	}
 	
+	/**
+	 * Returns the expected placeholder.
+	 */
+	public de.tu_dresden.mgt.resource.mgt.grammar.MgtSyntaxElement getSymtaxElement() {
+		return placeholder;
+	}
+	
 	public String getTokenName() {
 		return placeholder.getTokenName();
 	}
@@ -41,4 +48,9 @@ public class MgtExpectedStructuralFeature extends de.tu_dresden.mgt.resource.mgt
 		}
 		return false;
 	}
+	@Override	
+	public int hashCode() {
+		return getFeature().hashCode();
+	}
+	
 }

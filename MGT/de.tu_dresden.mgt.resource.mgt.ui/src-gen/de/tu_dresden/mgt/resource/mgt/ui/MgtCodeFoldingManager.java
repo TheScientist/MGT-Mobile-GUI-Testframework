@@ -319,6 +319,7 @@ public class MgtCodeFoldingManager {
 			encryptMsg = md.digest(text.getBytes());
 		} catch (java.security.NoSuchAlgorithmException e) {
 			de.tu_dresden.mgt.resource.mgt.ui.MgtUIPlugin.logError("NoSuchAlgorithmException while creating MD5 checksum.", e);
+			return "";
 		}
 		String swap = "";
 		String byteStr = "";

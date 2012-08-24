@@ -12,30 +12,21 @@ package de.tu_dresden.mgt.resource.mgt.ui;
  */
 public class MgtSyntaxColoringPreferencePage extends org.eclipse.jface.preference.PreferencePage implements org.eclipse.ui.IWorkbenchPreferencePage {
 	
-	private final static de.tu_dresden.mgt.resource.mgt.ui.MgtAntlrTokenHelper tokenHelper = new de.tu_dresden.mgt.resource.mgt.ui.MgtAntlrTokenHelper();
 	private final static java.util.Map<String, java.util.List<HighlightingColorListItem>> content = new java.util.LinkedHashMap<String, java.util.List<HighlightingColorListItem>>();
 	private final static java.util.Collection<IChangedPreference> changedPreferences = new java.util.ArrayList<IChangedPreference>();
 	
 	public MgtSyntaxColoringPreferencePage() {
 		super();
 		
-		de.tu_dresden.mgt.resource.mgt.IMgtMetaInformation syntaxPlugin = new de.tu_dresden.mgt.resource.mgt.mopp.MgtMetaInformation();
+		de.tu_dresden.mgt.resource.mgt.mopp.MgtMetaInformation metaInformation = new de.tu_dresden.mgt.resource.mgt.mopp.MgtMetaInformation();
 		
-		String languageId = syntaxPlugin.getSyntaxName();
+		String languageId = metaInformation.getSyntaxName();
 		
 		java.util.List<HighlightingColorListItem> terminals = new java.util.ArrayList<HighlightingColorListItem>();
-		String[] tokenNames = syntaxPlugin.getTokenNames();
+		String[] tokenNames = metaInformation.getSyntaxHighlightableTokenNames();
 		
 		for (int i = 0; i < tokenNames.length; i++) {
-			if (!tokenHelper.canBeUsedForSyntaxHighlighting(i)) {
-				continue;
-			}
-			
-			String tokenName = tokenHelper.getTokenName(tokenNames, i);
-			if (tokenName == null) {
-				continue;
-			}
-			HighlightingColorListItem item = new HighlightingColorListItem(languageId, tokenName);
+			HighlightingColorListItem item = new HighlightingColorListItem(languageId, tokenNames[i]);
 			terminals.add(item);
 		}
 		java.util.Collections.sort(terminals);

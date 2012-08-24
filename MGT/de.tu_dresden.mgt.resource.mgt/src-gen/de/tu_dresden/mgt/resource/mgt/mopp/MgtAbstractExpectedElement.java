@@ -13,7 +13,8 @@ package de.tu_dresden.mgt.resource.mgt.mopp;
 public abstract class MgtAbstractExpectedElement implements de.tu_dresden.mgt.resource.mgt.IMgtExpectedElement {
 	
 	private org.eclipse.emf.ecore.EClass ruleMetaclass;
-	private java.util.Set<de.tu_dresden.mgt.resource.mgt.util.MgtPair<de.tu_dresden.mgt.resource.mgt.IMgtExpectedElement, org.eclipse.emf.ecore.EStructuralFeature[]>> followers = new java.util.LinkedHashSet<de.tu_dresden.mgt.resource.mgt.util.MgtPair<de.tu_dresden.mgt.resource.mgt.IMgtExpectedElement, org.eclipse.emf.ecore.EStructuralFeature[]>>();
+	
+	private java.util.Set<de.tu_dresden.mgt.resource.mgt.util.MgtPair<de.tu_dresden.mgt.resource.mgt.IMgtExpectedElement, de.tu_dresden.mgt.resource.mgt.mopp.MgtContainedFeature[]>> followers = new java.util.LinkedHashSet<de.tu_dresden.mgt.resource.mgt.util.MgtPair<de.tu_dresden.mgt.resource.mgt.IMgtExpectedElement, de.tu_dresden.mgt.resource.mgt.mopp.MgtContainedFeature[]>>();
 	
 	public MgtAbstractExpectedElement(org.eclipse.emf.ecore.EClass ruleMetaclass) {
 		super();
@@ -24,11 +25,11 @@ public abstract class MgtAbstractExpectedElement implements de.tu_dresden.mgt.re
 		return ruleMetaclass;
 	}
 	
-	public void addFollower(de.tu_dresden.mgt.resource.mgt.IMgtExpectedElement follower, org.eclipse.emf.ecore.EStructuralFeature[] path) {
-		followers.add(new de.tu_dresden.mgt.resource.mgt.util.MgtPair<de.tu_dresden.mgt.resource.mgt.IMgtExpectedElement, org.eclipse.emf.ecore.EStructuralFeature[]>(follower, path));
+	public void addFollower(de.tu_dresden.mgt.resource.mgt.IMgtExpectedElement follower, de.tu_dresden.mgt.resource.mgt.mopp.MgtContainedFeature[] path) {
+		followers.add(new de.tu_dresden.mgt.resource.mgt.util.MgtPair<de.tu_dresden.mgt.resource.mgt.IMgtExpectedElement, de.tu_dresden.mgt.resource.mgt.mopp.MgtContainedFeature[]>(follower, path));
 	}
 	
-	public java.util.Collection<de.tu_dresden.mgt.resource.mgt.util.MgtPair<de.tu_dresden.mgt.resource.mgt.IMgtExpectedElement, org.eclipse.emf.ecore.EStructuralFeature[]>> getFollowers() {
+	public java.util.Collection<de.tu_dresden.mgt.resource.mgt.util.MgtPair<de.tu_dresden.mgt.resource.mgt.IMgtExpectedElement, de.tu_dresden.mgt.resource.mgt.mopp.MgtContainedFeature[]>> getFollowers() {
 		return followers;
 	}
 	

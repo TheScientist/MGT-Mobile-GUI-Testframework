@@ -35,12 +35,12 @@ public class MgtGrammarInformationProvider {
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword MGT_0_0_0_15 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword(":", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtPlaceholder MGT_0_0_0_16 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtPlaceholder(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getTestSuite().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.TEST_SUITE__ADAPTER), "IDENTIFIER", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtLineBreak MGT_0_0_0_17 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtLineBreak(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 1);
-	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_0_0_0_18_0_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getTestSuite().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.TEST_SUITE__SEQUENCES), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 0);
+	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_0_0_0_18_0_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getTestSuite().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.TEST_SUITE__SEQUENCES), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, new org.eclipse.emf.ecore.EClass[] {de.tu_dresden.mgt.MgtPackage.eINSTANCE.getSequence(), }, 0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtLineBreak MGT_0_0_0_18_0_0_1 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtLineBreak(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 1);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence MGT_0_0_0_18_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, MGT_0_0_0_18_0_0_0, MGT_0_0_0_18_0_0_1);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtChoice MGT_0_0_0_18_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtChoice(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, MGT_0_0_0_18_0_0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtCompound MGT_0_0_0_18 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtCompound(MGT_0_0_0_18_0, de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.STAR);
-	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_0_0_0_19_0_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getTestSuite().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.TEST_SUITE__TEST_CASES), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 0);
+	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_0_0_0_19_0_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getTestSuite().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.TEST_SUITE__TEST_CASES), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, new org.eclipse.emf.ecore.EClass[] {de.tu_dresden.mgt.MgtPackage.eINSTANCE.getTestCase(), }, 0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtLineBreak MGT_0_0_0_19_0_0_1 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtLineBreak(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence MGT_0_0_0_19_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, MGT_0_0_0_19_0_0_0, MGT_0_0_0_19_0_0_1);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtChoice MGT_0_0_0_19_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtChoice(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, MGT_0_0_0_19_0_0);
@@ -57,7 +57,7 @@ public class MgtGrammarInformationProvider {
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword MGT_1_0_0_5 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword(":", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtPlaceholder MGT_1_0_0_6 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtPlaceholder(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getTestCase().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.TEST_CASE__NAME), "IDENTIFIER", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtLineBreak MGT_1_0_0_7 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtLineBreak(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 2);
-	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_1_0_0_8_0_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getTestCase().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.TEST_CASE__TEST_STEPS), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 0);
+	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_1_0_0_8_0_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getTestCase().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.TEST_CASE__TEST_STEPS), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, new org.eclipse.emf.ecore.EClass[] {de.tu_dresden.mgt.MgtPackage.eINSTANCE.getAbstractTestStep(), }, 0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword MGT_1_0_0_8_0_0_1 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword(";", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtLineBreak MGT_1_0_0_8_0_0_2 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtLineBreak(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 1);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence MGT_1_0_0_8_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, MGT_1_0_0_8_0_0_0, MGT_1_0_0_8_0_0_1, MGT_1_0_0_8_0_0_2);
@@ -70,9 +70,9 @@ public class MgtGrammarInformationProvider {
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword MGT_2_0_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword("ASSERT", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtPlaceholder MGT_2_0_0_1 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtPlaceholder(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getAssertion().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.ASSERTION__ASSERT), "IDENTIFIER", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword MGT_2_0_0_2 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword("(", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE);
-	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_2_0_0_3 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getAssertion().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.ASSERTION__ACTUAL), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 0);
+	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_2_0_0_3 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getAssertion().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.ASSERTION__ACTUAL), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, new org.eclipse.emf.ecore.EClass[] {de.tu_dresden.mgt.MgtPackage.eINSTANCE.getKeyword(), }, 0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword MGT_2_0_0_4_0_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword(",", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE);
-	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_2_0_0_4_0_0_1 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getAssertion().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.ASSERTION__EXPECTED), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 0);
+	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_2_0_0_4_0_0_1 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getAssertion().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.ASSERTION__EXPECTED), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, new org.eclipse.emf.ecore.EClass[] {de.tu_dresden.mgt.MgtPackage.eINSTANCE.getTestDate(), }, 0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence MGT_2_0_0_4_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, MGT_2_0_0_4_0_0_0, MGT_2_0_0_4_0_0_1);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtChoice MGT_2_0_0_4_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtChoice(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, MGT_2_0_0_4_0_0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtCompound MGT_2_0_0_4 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtCompound(MGT_2_0_0_4_0, de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.QUESTIONMARK);
@@ -92,14 +92,14 @@ public class MgtGrammarInformationProvider {
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtRule MGT_3 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtRule(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getUIElementLocator(), MGT_3_0, de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtPlaceholder MGT_4_0_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtPlaceholder(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getKeyword().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.KEYWORD__NAME), "IDENTIFIER", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword MGT_4_0_0_1_0_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword(":", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE);
-	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_4_0_0_1_0_0_1 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getKeyword().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.KEYWORD__TARGET), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 0);
+	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_4_0_0_1_0_0_1 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getKeyword().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.KEYWORD__TARGET), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, new org.eclipse.emf.ecore.EClass[] {de.tu_dresden.mgt.MgtPackage.eINSTANCE.getUIElementLocator(), }, 0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence MGT_4_0_0_1_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, MGT_4_0_0_1_0_0_0, MGT_4_0_0_1_0_0_1);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtChoice MGT_4_0_0_1_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtChoice(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, MGT_4_0_0_1_0_0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtCompound MGT_4_0_0_1 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtCompound(MGT_4_0_0_1_0, de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.QUESTIONMARK);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword MGT_4_0_0_2_0_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword(":", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE);
-	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_4_0_0_2_0_0_1 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getKeyword().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.KEYWORD__TEST_DATA), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 0);
+	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_4_0_0_2_0_0_1 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getKeyword().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.KEYWORD__TEST_DATA), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, new org.eclipse.emf.ecore.EClass[] {de.tu_dresden.mgt.MgtPackage.eINSTANCE.getTestDate(), }, 0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword MGT_4_0_0_2_0_0_2_0_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword(",", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE);
-	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_4_0_0_2_0_0_2_0_0_1 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getKeyword().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.KEYWORD__TEST_DATA), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 0);
+	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_4_0_0_2_0_0_2_0_0_1 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getKeyword().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.KEYWORD__TEST_DATA), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, new org.eclipse.emf.ecore.EClass[] {de.tu_dresden.mgt.MgtPackage.eINSTANCE.getTestDate(), }, 0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence MGT_4_0_0_2_0_0_2_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, MGT_4_0_0_2_0_0_2_0_0_0, MGT_4_0_0_2_0_0_2_0_0_1);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtChoice MGT_4_0_0_2_0_0_2_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtChoice(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, MGT_4_0_0_2_0_0_2_0_0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtCompound MGT_4_0_0_2_0_0_2 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtCompound(MGT_4_0_0_2_0_0_2_0, de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.STAR);
@@ -115,7 +115,7 @@ public class MgtGrammarInformationProvider {
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtWhiteSpace MGT_5_0_0_3 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtWhiteSpace(1, de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword MGT_5_0_0_4 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword("{", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtLineBreak MGT_5_0_0_5 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtLineBreak(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 1);
-	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_5_0_0_6_0_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getSequence().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.SEQUENCE__STEPS), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 0);
+	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment MGT_5_0_0_6_0_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtContainment(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getSequence().getEStructuralFeature(de.tu_dresden.mgt.MgtPackage.SEQUENCE__STEPS), de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, new org.eclipse.emf.ecore.EClass[] {de.tu_dresden.mgt.MgtPackage.eINSTANCE.getAbstractTestStep(), }, 0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword MGT_5_0_0_6_0_0_1 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtKeyword(";", de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtLineBreak MGT_5_0_0_6_0_0_2 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtLineBreak(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, 1);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence MGT_5_0_0_6_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, MGT_5_0_0_6_0_0_0, MGT_5_0_0_6_0_0_1, MGT_5_0_0_6_0_0_2);
@@ -147,6 +147,32 @@ public class MgtGrammarInformationProvider {
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence MGT_10_0_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtSequence(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, MGT_10_0_0_0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtChoice MGT_10_0 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtChoice(de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE, MGT_10_0_0);
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtRule MGT_10 = new de.tu_dresden.mgt.resource.mgt.grammar.MgtRule(de.tu_dresden.mgt.MgtPackage.eINSTANCE.getFloat(), MGT_10_0, de.tu_dresden.mgt.resource.mgt.grammar.MgtCardinality.ONE);
+	
+	public static String getSyntaxElementID(de.tu_dresden.mgt.resource.mgt.grammar.MgtSyntaxElement syntaxElement) {
+		if (syntaxElement == null) {
+			// null indicates EOF
+			return "<EOF>";
+		}
+		for (java.lang.reflect.Field field : de.tu_dresden.mgt.resource.mgt.grammar.MgtGrammarInformationProvider.class.getFields()) {
+			Object fieldValue;
+			try {
+				fieldValue = field.get(null);
+				if (fieldValue == syntaxElement) {
+					String id = field.getName();
+					return id;
+				}
+			} catch (Exception e) { }
+		}
+		return null;
+	}
+	
+	public static de.tu_dresden.mgt.resource.mgt.grammar.MgtSyntaxElement getSyntaxElementByID(String syntaxElementID) {
+		try {
+			return (de.tu_dresden.mgt.resource.mgt.grammar.MgtSyntaxElement) de.tu_dresden.mgt.resource.mgt.grammar.MgtGrammarInformationProvider.class.getField(syntaxElementID).get(null);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 	
 	public final static de.tu_dresden.mgt.resource.mgt.grammar.MgtRule[] RULES = new de.tu_dresden.mgt.resource.mgt.grammar.MgtRule[] {
 		MGT_0,

@@ -207,7 +207,11 @@ public class MgtTextHover implements org.eclipse.jface.text.ITextHover, org.ecli
 	// The warning about overriding or implementing a deprecated API cannot be avoided
 	// because the SourceViewerConfiguration class depends on ITextHover.
 	public String getHoverInfo(org.eclipse.jface.text.ITextViewer textViewer, org.eclipse.jface.text.IRegion hoverRegion) {
-		return ((de.tu_dresden.mgt.resource.mgt.ui.MgtDocBrowserInformationControlInput) getHoverInfo2(textViewer, hoverRegion)).getHtml();
+		Object hoverInfo = getHoverInfo2(textViewer, hoverRegion);
+		if (hoverInfo == null) {
+			return null;
+		}
+		return ((de.tu_dresden.mgt.resource.mgt.ui.MgtDocBrowserInformationControlInput) hoverInfo).getHtml();
 	}
 	
 	public org.eclipse.jface.text.IRegion getHoverRegion(org.eclipse.jface.text.ITextViewer textViewer, int offset) {
@@ -238,6 +242,9 @@ public class MgtTextHover implements org.eclipse.jface.text.ITextHover, org.ecli
 	
 	private de.tu_dresden.mgt.resource.mgt.ui.MgtDocBrowserInformationControlInput internalGetHoverInfo(org.eclipse.jface.text.ITextViewer textViewer, org.eclipse.jface.text.IRegion hoverRegion) {
 		de.tu_dresden.mgt.resource.mgt.IMgtTextResource textResource = resourceProvider.getResource();
+		if (textResource == null) {
+			return null;
+		}
 		de.tu_dresden.mgt.resource.mgt.IMgtLocationMap locationMap = textResource.getLocationMap();
 		java.util.List<org.eclipse.emf.ecore.EObject> elementsAtOffset = locationMap.getElementsAt(hoverRegion.getOffset());
 		if (elementsAtOffset == null || elementsAtOffset.size() == 0) {
@@ -300,10 +307,8 @@ public class MgtTextHover implements org.eclipse.jface.text.ITextHover, org.ecli
 		String css = styleSheet;
 		// Sets background color for the hover text window
 		css += "body {background-color:#FFFFE1;}\n";
-		if (css != null) {
-			org.eclipse.swt.graphics.FontData fontData = org.eclipse.jface.resource.JFaceResources.getFontRegistry().getFontData(FONT)[0];
-			css = de.tu_dresden.mgt.resource.mgt.ui.MgtHTMLPrinter.convertTopLevelFont(css, fontData);
-		}
+		org.eclipse.swt.graphics.FontData fontData = org.eclipse.jface.resource.JFaceResources.getFontRegistry().getFontData(FONT)[0];
+		css = de.tu_dresden.mgt.resource.mgt.ui.MgtHTMLPrinter.convertTopLevelFont(css, fontData);
 		
 		return css;
 	}
