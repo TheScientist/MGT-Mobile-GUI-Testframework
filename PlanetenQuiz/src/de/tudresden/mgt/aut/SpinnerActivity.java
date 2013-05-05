@@ -38,6 +38,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.tud.planetenquiz.R;
 
 /**
  * Displays an Android spinner widget backed by data in an array. The

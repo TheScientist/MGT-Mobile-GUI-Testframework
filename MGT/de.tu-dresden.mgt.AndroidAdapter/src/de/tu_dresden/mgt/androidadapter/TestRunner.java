@@ -181,7 +181,7 @@ public class TestRunner {
 		String target = path + "/libs/robotium-solo-4-1.jar";
 		File exists = new File(target);
 		if (!exists.exists()) {
-			new File(path).mkdirs();
+			new File(target).getParentFile().mkdirs();
 			try {
 				URL url = new URL(
 						"platform:/plugin/de.tu-dresden.mgt.AndroidAdapter/lib/robotium-solo-4.1.jar");
@@ -191,7 +191,6 @@ public class TestRunner {
 				// this.getClass().getResourceAsStream("robotium-solo-4.1.jar");
 				if (inputStream != null) {
 					File f = new File(target);
-					f.createNewFile();
 					OutputStream out = new FileOutputStream(f);
 					byte buf[] = new byte[1024];
 					int len;

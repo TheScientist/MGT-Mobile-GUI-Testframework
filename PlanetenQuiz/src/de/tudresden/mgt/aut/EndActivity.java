@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import de.tud.planetenquiz.R;
 
 public class EndActivity extends Activity {
 	@Override
