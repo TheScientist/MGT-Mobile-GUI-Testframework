@@ -25,7 +25,7 @@ TESTSUITE {
 	TESTCASE {
 		caseName: allFalse
 		seq: startScreen;
-		clickOnRadioButton : id radio0;
+		clickOnRadioButton : id radio1;
 		clickOnButton : id radio1;
 		clickOnButton : id radio0;
 		clickOnRadioButton : id  radio1;
