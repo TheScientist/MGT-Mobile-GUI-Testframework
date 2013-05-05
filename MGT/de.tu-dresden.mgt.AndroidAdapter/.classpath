@@ -7,14 +7,14 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry including="**/*.java" kind="src" path="resources"/>
-	<classpathentry exported="true" kind="lib" path="resources/robotiumId.jar"/>
-	<classpathentry kind="lib" path="resources/robotium-solo-3.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/robotium-solo-4.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/android.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

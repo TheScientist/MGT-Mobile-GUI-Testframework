@@ -124,7 +124,7 @@ public class AndroidAdapter implements IAdapter{
 	public Collection<String> getKeywords() {
 		Collection<String> keywords = new HashSet<String>();
 		try {
-//			Class<?> solo = this.getClass().getClassLoader().loadClass("com.jayway.android.robotium.solo.Solo");
+			this.getClass().getClassLoader().loadClass("com.jayway.android.robotium.solo.Solo");
 			Class<?> soloID = this.getClass().getClassLoader().loadClass("de.tud.mgt.SoloId");
 			Method[] methods = soloID.getMethods();
 			List<Class<?>> allowedReturns = new LinkedList<Class<?>>();

@@ -94,6 +94,12 @@ public class AbstractMgtInterpreter<ResultType, ContextType> {
 		if (result != null) {
 			return result;
 		}
+		if (object instanceof de.tu_dresden.mgt.Float) {
+			result = interprete_de_tu_005fdresden_mgt_Float((de.tu_dresden.mgt.Float) object, context);
+		}
+		if (result != null) {
+			return result;
+		}
 		if (object instanceof de.tu_dresden.mgt.TestDate) {
 			result = interprete_de_tu_005fdresden_mgt_TestDate((de.tu_dresden.mgt.TestDate) object, context);
 		}
@@ -126,12 +132,6 @@ public class AbstractMgtInterpreter<ResultType, ContextType> {
 		}
 		if (object instanceof de.tu_dresden.mgt.SequentialStep) {
 			result = interprete_de_tu_005fdresden_mgt_SequentialStep((de.tu_dresden.mgt.SequentialStep) object, context);
-		}
-		if (result != null) {
-			return result;
-		}
-		if (object instanceof de.tu_dresden.mgt.Float) {
-			result = interprete_de_tu_005fdresden_mgt_Float((de.tu_dresden.mgt.Float) object, context);
 		}
 		if (result != null) {
 			return result;

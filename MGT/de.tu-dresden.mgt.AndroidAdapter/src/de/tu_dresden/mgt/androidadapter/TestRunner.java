@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -50,14 +52,13 @@ public class TestRunner {
 	public static final Logger logger = Logger.getLogger(TestRunner.class);
 	private static final String CLEANDEBUG = "ant clean debug";
 	private static final String INSTALL = "ant installd";
-	private static String TEST = "adb shell am instrument -w -e " +
-			"class %s " +
-			"%s.tests/android.test.InstrumentationTestRunner";
+	private static String TEST = "adb shell am instrument -w -e " + "class %s "
+			+ "%s.tests/android.test.InstrumentationTestRunner";
 
 	private Class testClass;
 	private TestSuite suite;
 	private Properties properties;
-	
+
 	public TestRunner(TestSuite suite, Properties properties) {
 		initLogger();
 		this.properties = properties;
@@ -69,23 +70,25 @@ public class TestRunner {
 		for (Sequence seq : suite.getSequences()) {
 			Method method = new Method(seq.getName());
 			for (AbstractTestStep step : seq.getSteps()) {
-				method.addStatement(new Statement(handleStep(step, method, testClass), step));
+				method.addStatement(new Statement(handleStep(step, method,
+						testClass), step));
 			}
 			testClass.addMethod(method);
 		}
 		for (TestCase testMethod : suite.getTestCases()) {
 			Method method = new Method("test" + testMethod.getName());
 			for (AbstractTestStep step : testMethod.getTestSteps()) {
-				method.addStatement(new Statement(handleStep(step, method, testClass), step));
-			}			
+				method.addStatement(new Statement(handleStep(step, method,
+						testClass), step));
+			}
 			testClass.addMethod(method);
 		}
 	}
-	
+
 	public TestSuite run() {
 		MessageConsole myConsole = findConsole("MGT Runner");
 		MessageConsoleStream console = myConsole.newMessageStream();
-		
+
 		IProject project = ResourcesPlugin.getWorkspace().getRoot()
 				.getProject(suite.getSystemUnderTest());
 		String autPath = project.getLocation().toString();
@@ -94,12 +97,12 @@ public class TestRunner {
 		File exisingProject = new File(workspace + testProject);
 		try {
 			String buildAut = properties.getProperty("buildAut");
-			
-			if(buildAut != null && buildAut.equals("true")) {
-			// update project under test
+
+			if (buildAut != null && buildAut.equals("true")) {
+				// update project under test
 				String cmd = "android update project --path .";
 				console.println("Update app under test...");
-				if(!runCommand(cmd, autPath,null))
+				if (!runCommand(cmd, autPath, null))
 					console.println("Update failed! See log for more informations.");
 				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 			}
@@ -126,14 +129,14 @@ public class TestRunner {
 					.printJUnitFile(workspace + testProject + "/src/"
 							+ testClass.getTargetPackage().replace(".", "/")
 							+ "/test/");
-			moveRobotiumLibsIntoProject(workspace + testProject + "/libs");
+			moveRobotiumLibsIntoProject(workspace + testProject);
 
 			if (buildAut.equalsIgnoreCase("true")) {
 				console.println("Build app under test...");
-				if(runCommand(CLEANDEBUG, autPath, null)) {	
+				if (runCommand(CLEANDEBUG, autPath, null)) {
 					console.println("Install app under test...");
-					if(!runCommand(INSTALL, autPath, null))
-							console.println("Installation failed! See log for more informations.");
+					if (!runCommand(INSTALL, autPath, null))
+						console.println("Installation failed! See log for more informations.");
 				} else {
 					console.println("Build failed! See log for more informations.");
 				}
@@ -149,13 +152,12 @@ public class TestRunner {
 					console.println("Running tests...");
 					runCommand(TEST, workspace + testProject, jUnitFilePath);
 				}
-			}
-			else {
+			} else {
 				console.println("Build failed! See log for more informations.");
 			}
 		} catch (Exception e) {
 			logger.error(e.toString());
-			for(StackTraceElement elem : e.getStackTrace()) {
+			for (StackTraceElement elem : e.getStackTrace()) {
 				logger.error("\t" + elem.toString());
 			}
 			console.println("An error occured. See log file for infomation.");
@@ -168,40 +170,55 @@ public class TestRunner {
 		logger.setLevel(Level.ALL);
 		try {
 			BasicConfigurator.configure(new FileAppender(new PatternLayout(
-					"[%-5p] %c{1} : %m%n"),
-					System.getProperty("user.dir") + "/mgtLog.log", false));
+					"[%-5p] %c{1} : %m%n"), System.getProperty("user.dir")
+					+ "/mgtLog.log", false));
 		} catch (IOException e) {
 			logger.error(e.toString());
 		}
 	}
 
 	private void moveRobotiumLibsIntoProject(String path) {
-		String target = path + "/robotium-solo-3.2.1.jar";
+		String target = path + "/libs/robotium-solo-4-1.jar";
 		File exists = new File(target);
 		if (!exists.exists()) {
-
-			InputStream inputStream = TestRunner.class
-					.getResourceAsStream("/robotium-solo-3.2.1.jar");
+			new File(path).mkdirs();
 			try {
-				File f = new File(target);
-				OutputStream out = new FileOutputStream(f);
-				byte buf[] = new byte[1024];
-				int len;
-				while ((len = inputStream.read(buf)) > 0)
-					out.write(buf, 0, len);
-				out.close();
-				inputStream.close();
-			} catch (IOException e) {
+				URL url = new URL(
+						"platform:/plugin/de.tu-dresden.mgt.AndroidAdapter/lib/robotium-solo-4.1.jar");
+				InputStream inputStream = url.openConnection().getInputStream();
+
+				// InputStream inputStream =
+				// this.getClass().getResourceAsStream("robotium-solo-4.1.jar");
+				if (inputStream != null) {
+					File f = new File(target);
+					f.createNewFile();
+					OutputStream out = new FileOutputStream(f);
+					byte buf[] = new byte[1024];
+					int len;
+					while ((len = inputStream.read(buf)) > 0)
+						out.write(buf, 0, len);
+					out.close();
+					inputStream.close();
+				} else {
+					throw new MissingResourceException("Resource not found",
+							"TestRunner", "robotium-solo-4.1.jar");
+				}
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		String target2 = path + "/robotiumId.jar";
-		File exists2 = new File(target2);
-		if (!exists2.exists()) {
-			InputStream inputStream = TestRunner.class
-					.getResourceAsStream("/robotiumId.jar");
-			try {
-				File f = new File(target2);
+		String soloPath = path + "/src/de/tud/mgt/SoloId.java";
+		new File(soloPath).getParentFile().mkdirs();
+		try {
+			URL url = new URL(
+					"platform:/plugin/de.tu-dresden.mgt.AndroidAdapter/lib/SoloId.java");
+			InputStream inputStream = url.openConnection().getInputStream();
+
+			// InputStream inputStream =
+			// this.getClass().getResourceAsStream("robotium-solo-4.1.jar");
+			if (inputStream != null) {
+				File f = new File(soloPath);
+				f.createNewFile();
 				OutputStream out = new FileOutputStream(f);
 				byte buf[] = new byte[1024];
 				int len;
@@ -209,20 +226,24 @@ public class TestRunner {
 					out.write(buf, 0, len);
 				out.close();
 				inputStream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+			} else {
+				throw new MissingResourceException("Resource not found",
+						"SoloId", "SoloId.java");
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
-	private boolean runCommand(String command, String directory, String jUnitFile)
-			throws IOException {
+	private boolean runCommand(String command, String directory,
+			String jUnitFile) throws IOException {
 		if (command == null || command.isEmpty()) {
 			return false;
 		}
 		boolean test = false;
-		if(command.equals(TEST)) {
-			command = String.format(TEST, this.testClass.getTargetPackage() + ".test." + suite.getName(), 
+		if (command.equals(TEST)) {
+			command = String.format(TEST, this.testClass.getTargetPackage()
+					+ ".test." + suite.getName(),
 					this.testClass.getTargetPackage());
 			test = true;
 		}
@@ -238,12 +259,11 @@ public class TestRunner {
 		}
 		Map<String, String> env = pb.environment();
 		String andrSDK = properties.getProperty("androidSDKPath");
-		if(!andrSDK.endsWith(File.separator)) {
+		if (!andrSDK.endsWith(File.separator)) {
 			andrSDK += File.separator;
 		}
-		String path = env.get("PATH")
-				+ File.pathSeparator + andrSDK + "tools" + File.pathSeparator
-				+ andrSDK + "platform-tools";
+		String path = env.get("PATH") + File.pathSeparator + andrSDK + "tools"
+				+ File.pathSeparator + andrSDK + "platform-tools";
 		env.remove("PATH");
 		env.put("PATH", path);
 		pb.redirectErrorStream(true);
@@ -256,7 +276,7 @@ public class TestRunner {
 		String line;
 		logger.info("Executing: " + command);
 		boolean ret = true;
-		if(test) {
+		if (test) {
 			CmdRunner run = new CmdRunner(suite, testClass);
 			run.readTestExec(br, jUnitFile);
 		} else {
@@ -268,7 +288,7 @@ public class TestRunner {
 			}
 		}
 		return ret;
-	}	
+	}
 
 	private String handleStep(AbstractTestStep step, Method method,
 			Class testClass) {

@@ -1,6 +1,5 @@
 package de.tud.mgt;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +8,12 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.jayway.android.robotium.solo.Solo;
 
@@ -25,35 +29,20 @@ public class SoloId extends Solo{
 	
 	@Override
 	public void pressSpinnerItem(int id, int itemIndex) {
-		super.pressSpinnerItem(getPositionFromId("Spinner", id), itemIndex);
+		super.pressSpinnerItem(getPositionFromId(Spinner.class, id), itemIndex);
 	}
 	
-	private int getPositionFromId(String viewType, int id) {
+	private int getPositionFromId(Class<? extends View> viewType, int id) {
 		HashMap<String, String> theMap = new HashMap<String, String>();
 		theMap.put("Spinner", "getCurrentSpinners");	
 		theMap.put("Button", "getCurrentButtons");
 		theMap.put("EditText", "getCurrentEditTexts");
 		theMap.put("RadioButton", "getCurrentRadioButtons");
-		if(theMap.containsKey(viewType)) {
-			try {
-				Method m = super.getClass().getMethod(theMap.get(viewType), (Class<?>[]) null);
-				@SuppressWarnings("unchecked")
-				List<View> views = (List<View>) m.invoke(this, (Object[]) null);
-				for(int i=0; i<views.size(); i++) {
-					View view = views.get(i);
-					if(view.getId() == id) {
-						System.out.println(id + "mapped to " + i);
-						return i;
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			} 
-		}		
 		
-		List<View> allViews = super.getCurrentViews();
+		
+		List<?> allViews = super.getCurrentViews(viewType);
 		for(int i=0; i<allViews.size(); i++) {
-			View view = allViews.get(i);
+			View view = (View) allViews.get(i);
 			if(view.getId() == id) {
 				System.out.println(id + "mapped to " + i);
 				return i;
@@ -65,47 +54,42 @@ public class SoloId extends Solo{
 	
 	@Override
 	public void clickOnButton(int id) {
-		super.clickOnButton(getPositionFromId("Button", id));
+		super.clickOnButton(((Button) getView(id)).getText().toString());
 	}
 	
 	@Override
 	public void clearEditText(int id) {
-		super.clearEditText(getPositionFromId("EditText", id));
+		super.clearEditText((EditText) getView(id));
 	}
 	
 	@Override
 	public void clickOnRadioButton(int id) {
-		super.clickOnRadioButton(getPositionFromId("RadioButton", id));
+		super.clickOnRadioButton(getPositionFromId(RadioButton.class, id));
 	}
 	
 	@Override
-	public void enterText(int id, String text) {
-		super.enterText((getPositionFromId("EditText", id)), text);
+	public void enterText(int id, String text) {		
+		super.enterText((EditText) super.getView(id), text);
 	}
 	
 	@Override
 	public Button getButton(int id) {
-		return super.getButton(getPositionFromId("Button", id));
+		return (Button) super.getView(id);
 	}
 	
 	@Override
 	public boolean isRadioButtonChecked(int id) {
-		return super.isRadioButtonChecked(getPositionFromId("RadioButton", id));
+		return super.isRadioButtonChecked(((RadioButton) getView(id)).getText().toString());
 	}
 	
 	@Override
 	public boolean isSpinnerTextSelected(int id, String text) {
-		return super.isSpinnerTextSelected(getPositionFromId("Spinner", id), text);
+		return super.isSpinnerTextSelected(getPositionFromId(Spinner.class, id), text);
 	}
-	
-//	@Override
-//	public void pressMenuItem(int id) {
-//		super.pressMenuItem(getPositionFromId("Menu", id));
-//	}
 	
 	@Override
 	public boolean scrollUpList(int id) {
-		return super.scrollUpList(getPositionFromId("ListView", id));
+		return super.scrollUpList(getPositionFromId(ListView.class, id));
 	}
 	
 	public void sendKey(String updown) {
@@ -117,12 +101,12 @@ public class SoloId extends Solo{
 	
 	@Override
 	public void typeText(int id, String text) {
-		super.typeText(getPositionFromId("EditText", id), text);
+		super.typeText(getPositionFromId(EditText.class, id), text);
 	}
 	
 	@Override
 	public void setTimePicker(int id, int hour, int minute) {
-		super.setTimePicker(getPositionFromId("TimePicker", id), hour, minute);
+		super.setTimePicker(getPositionFromId(TimePicker.class, id), hour, minute);
 	}
 	
 	public String getTextColorOfView(int id) {

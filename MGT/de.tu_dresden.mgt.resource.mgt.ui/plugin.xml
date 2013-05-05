@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension-point id="de.tu_dresden.mgt.adapter" name="TestAdapter" schema="schema/de.tu_dresden.mgt.adapter.exsd"/>
+	<extension-point id="de.tu_dresden.mgt.adapter" name="TestAdapter" schema="schema/de.tu_dresden.mgt.adapter.exsd"/>
 	<extension point="org.emftext.access.syntax.ui">
 		<metaInformationProvider class="de.tu_dresden.mgt.resource.mgt.ui.MgtUIMetaInformation" id="de.tu_dresden.mgt.resource.mgt.ui.MgtUIMetaInformation">
 		</metaInformationProvider>

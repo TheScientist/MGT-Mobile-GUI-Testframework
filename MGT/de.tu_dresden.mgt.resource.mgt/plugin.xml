@@ -108,10 +108,4 @@
 		</sourceLocator>
 	</extension>
 	
-	<extension point="de.tu_dresden.mgt.resource.mgt.default_load_options"> 
-	  <provider 
-	    class="de.tu_dresden.mgt.adapter.ValidateModel" 
-	    id="de.tu_dresden.mgt.resource.mgt.adapter.provider1"> 
-	  </provider> 
-	</extension>
 </plugin>

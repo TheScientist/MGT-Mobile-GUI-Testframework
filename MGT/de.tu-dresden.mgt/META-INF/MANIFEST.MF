@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: de.tu-dresden.mgt;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 0.9.3
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -10,8 +10,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: de.tu_dresden.mgt,
  de.tu_dresden.mgt.impl,
  de.tu_dresden.mgt.util
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.emf.ecore;visibility:=reexport,
- org.eclipse.emf.ecore.xmi;visibility:=reexport
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.eclipse.emf.ecore;bundle-version="2.8.3";visibility:=reexport,
+ org.eclipse.emf.ecore.xmi;bundle-version="2.8.1";visibility:=reexport
 Bundle-ActivationPolicy: lazy
 Import-Package: de.tu_dresden.mgt
