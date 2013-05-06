@@ -3,3 +3,5 @@ bin
 # Eclipse Stuff #
 .metadata
 .settings
+# Generated Testproject
+PlanetenQuizTest
