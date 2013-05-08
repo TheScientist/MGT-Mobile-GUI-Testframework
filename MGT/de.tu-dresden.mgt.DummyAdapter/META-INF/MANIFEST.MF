@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: DummyAdapter
 Bundle-SymbolicName: de.tu-dresden.mgt.DummyAdapter;singleton:=true
-Bundle-Version: 0.9.3
+Bundle-Version: 0.0.1
 Export-Package: de.tu_dresden.mgt.dummyAdapter
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: de.tu_dresden.mgt.resource.mgt;bundle-version="0.9.3",
- de.tu-dresden.mgt;bundle-version="0.9.3"
+Require-Bundle: de.tu_dresden.mgt.resource.mgt;bundle-version="0.0.1",
+ de.tu-dresden.mgt;bundle-version="0.0.1"

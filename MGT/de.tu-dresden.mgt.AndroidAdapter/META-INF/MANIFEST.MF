@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: AndroidAdapter
 Bundle-SymbolicName: de.tu-dresden.mgt.AndroidAdapter;singleton:=true
-Bundle-Version: 0.9.3
+Bundle-Version: 0.0.2
 Export-Package: de.tu_dresden.mgt.androidadapter;
   uses:="de.tu_dresden.mgt.adapter,
    org.apache.log4j,
@@ -12,8 +12,8 @@ Export-Package: de.tu_dresden.mgt.androidadapter;
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.101",
  org.eclipse.core.runtime;bundle-version="3.7.0",
- de.tu_dresden.mgt.resource.mgt;bundle-version="0.9.3",
- de.tu-dresden.mgt;bundle-version="0.9.3",
+ de.tu_dresden.mgt.resource.mgt;bundle-version="0.0.1",
+ de.tu-dresden.mgt;bundle-version="0.0.1",
  org.eclipse.ui.console;bundle-version="3.5.100",
  org.eclipse.jface;bundle-version="3.7.0"
 Bundle-ClassPath: .,
