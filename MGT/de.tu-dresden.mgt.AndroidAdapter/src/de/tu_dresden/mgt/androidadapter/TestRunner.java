@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 
@@ -256,15 +255,7 @@ public class TestRunner {
 			logger.error("Your OS is not supported! Contact Developer.");
 			return false;
 		}
-		Map<String, String> env = pb.environment();
-		String andrSDK = properties.getProperty("androidSDKPath");
-		if (!andrSDK.endsWith(File.separator)) {
-			andrSDK += File.separator;
-		}
-		String path = env.get("PATH") + File.pathSeparator + andrSDK + "tools"
-				+ File.pathSeparator + andrSDK + "platform-tools";
-		env.remove("PATH");
-		env.put("PATH", path);
+
 		pb.redirectErrorStream(true);
 		if (directory != null)
 			pb.directory(new File(directory));
