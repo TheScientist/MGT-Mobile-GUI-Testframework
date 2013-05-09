@@ -1,10 +1,7 @@
 *.class
 bin
 # Eclipse Stuff #
-.project
 .metadata
 .settings
-# Package Files #
-*.jar
-*.war
-*.ear
+# Generated Testproject
+PlanetenQuizTest
