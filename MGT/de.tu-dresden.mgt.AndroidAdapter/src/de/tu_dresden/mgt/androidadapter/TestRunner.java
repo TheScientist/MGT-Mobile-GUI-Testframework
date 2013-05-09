@@ -165,12 +165,17 @@ public class TestRunner {
 	}
 
 	private void initLogger() {
+		MessageConsole myConsole = findConsole("MGT Runner");
+		myConsole.clearConsole();
+		MessageConsoleStream console = myConsole.newMessageStream();
+		final String logLocation = System.getProperty("user.home")
+				+ File.separator + "MGT" + File.separator + "mgtLog.log";
 		Logger.getRootLogger().setLevel(Level.ERROR);
 		logger.setLevel(Level.ALL);
 		try {
 			BasicConfigurator.configure(new FileAppender(new PatternLayout(
-					"[%-5p] %c{1} : %m%n"), System.getProperty("user.dir")
-					+ "/mgtLog.log", false));
+					"[%-5p] %c{1} : %m%n"), logLocation, false));
+			console.println("Using Logfile " + logLocation);
 		} catch (IOException e) {
 			logger.error(e.toString());
 		}

@@ -21,7 +21,7 @@ TESTSUITE {
   		clickOnButton : id radio0;
 		clickOnButton : id radio1;
 		clickOnButton : id radio0;
-		pressSpinnerItem : id spinner01 :-3;
+		pressSpinnerItem : id spinner01 : -3;
 		ASSERT assertTrue( isSpinnerTextSelected : id spinner01 : "Merkur" ):FAIL;
   		ASSERT assertTrue(searchText : "Super, deine Anwort war korrekt."):FAIL;
   	}
